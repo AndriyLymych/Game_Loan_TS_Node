@@ -2,9 +2,9 @@ import {Document, Model, model, Schema} from 'mongoose';
 import {IHistory} from '../../interface';
 import {DbTableNameEnum} from '../../constant';
 
-export type HistoryType = IHistory & Document
+type HistoryType = IHistory & Document
 
-export const HistorySchema: Schema = new Schema<IHistory>({
+const HistorySchema: Schema = new Schema<IHistory>({
   event: {
     type: String,
     required: true

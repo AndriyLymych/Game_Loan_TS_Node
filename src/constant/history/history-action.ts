@@ -1,4 +1,6 @@
 export enum HistoryEvent {
     createUser = 'createUser',
-    confirmAccount = 'confirmAccount'
+    confirmAccount = 'confirmAccount',
+    authUser = 'authUser',
+    logoutUser = 'logoutUser'
 }

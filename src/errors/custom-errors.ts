@@ -8,9 +8,17 @@ export const customErrors = {
     message: 'User is already active',
     code: 4002
   },
+  BAD_REQUEST_USER_IS_NOT_CONFIRMED: {
+    message: 'User is not confirmed',
+    code: 4003
+  },
   BAD_REQUEST_USER_IS_NOT_PRESENT: {
     message: 'User is not present',
-    code: 4003
+    code: 4004
+  },
+  BAD_REQUEST_USER_IS_BLOCKED: {
+    message: 'User is blocked',
+    code: 4005
   },
 
   //401

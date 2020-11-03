@@ -1,15 +1,9 @@
 import {NextFunction, Response} from 'express';
-import {IUser} from '../../interface';
-import {userService} from '../../service/user';
+import {IRequest,IUser} from '../../interface';
 import {hashPassword, tokenCreator} from '../../helper';
-import {TokenActionEnum} from '../../constant/token';
-import {historyService} from '../../service/history';
-import {HistoryEvent} from '../../constant/history';
+import {HistoryEvent,ResponseStatusCodeEnum,TokenActionEnum,UserStatusEnum} from '../../constant';
 import {customErrors, ErrorHandler} from '../../errors';
-import {ResponseStatusCodeEnum} from '../../constant/db';
-import {emailService} from '../../service/email/email.service';
-import {UserStatusEnum} from '../../constant/user';
-import {IRequest} from 'src/interface/request.interface';
+import {emailService,historyService,userService} from '../../service';
 
 class UserController {
   async createUser(req: IRequest, res: Response, next: NextFunction): Promise<void> {

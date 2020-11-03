@@ -1,5 +1,5 @@
 import {IHistory} from '../../interface';
-import {HistoryModel} from '../../database/models/history.schema';
+import {HistoryModel} from '../../database/models';
 
 class HistoryService {
   addEvent(historyObj: Partial<IHistory>): Promise<IHistory> {

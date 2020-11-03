@@ -14,6 +14,7 @@ import {config} from './config';
 import * as swaggerDoc from './docs/swagger.json';
 import {ResponseStatusCodeEnum} from './constant/db';
 import {userRouter} from './router/user';
+import {authRouter} from './router/auth';
 
 const serverRequestLimit = rateLimit({
   windowMs: config.serverRateLimits.period,
@@ -77,6 +78,7 @@ class App {
 
       this.app.use('/docs', swaggerUI.serve, swaggerUI.setup(swaggerDoc));
       this.app.use('/users', userRouter);
+      this.app.use('/auth', authRouter);
     }
 }
 

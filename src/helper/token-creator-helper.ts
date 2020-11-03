@@ -1,8 +1,7 @@
 import * as jwt from 'jsonwebtoken';
-import {TokenActionEnum} from '../constant/token';
+import {ResponseStatusCodeEnum,TokenActionEnum} from '../constant';
 import {config} from '../config';
 import {customErrors, ErrorHandler} from '../errors';
-import {ResponseStatusCodeEnum} from '../constant/db';
 
 export const tokenCreator = (method: Partial<TokenActionEnum>): { access_token: string, refresh_token?: string } => {
 

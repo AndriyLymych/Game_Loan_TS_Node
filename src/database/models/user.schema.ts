@@ -3,14 +3,14 @@ import {Document, Model, model, Schema} from 'mongoose';
 import {IUser} from '../../interface';
 import {DbTableNameEnum,UserRoleEnum,UserStatusEnum} from '../../constant';
 
-export type UserType = IUser & Document
+type UserType = IUser & Document
 
 const tokenSubModel = {
   actionToken: String,
   action: String
 };
 
-export const UserSchema: Schema = new Schema<IUser>({
+const UserSchema: Schema = new Schema<IUser>({
   email: {
     type: String,
     required: true,
