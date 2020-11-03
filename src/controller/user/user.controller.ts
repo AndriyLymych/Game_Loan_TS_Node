@@ -1,4 +1,4 @@
-import {NextFunction, Request, Response} from 'express';
+import {NextFunction, Response} from 'express';
 import {IUser} from '../../interface';
 import {userService} from '../../service/user';
 import {hashPassword, tokenCreator} from '../../helper';
@@ -8,11 +8,13 @@ import {HistoryEvent} from '../../constant/history';
 import {customErrors, ErrorHandler} from '../../errors';
 import {ResponseStatusCodeEnum} from '../../constant/db';
 import {emailService} from '../../service/email/email.service';
+import {UserStatusEnum} from '../../constant/user';
+import {IRequest} from 'src/interface/request.interface';
 
 class UserController {
-  async createUser(req: Request, res: Response, next: NextFunction): Promise<void> {
+  async createUser(req: IRequest, res: Response, next: NextFunction): Promise<void> {
     try {
-      const user = req.body as IUser;
+      const user: IUser = req.body;
       const {email} = user;
 
       const userExist = await userService.getUserByParams({email});
@@ -39,6 +41,20 @@ class UserController {
 
       //TODO add user avatar save
       res.status(ResponseStatusCodeEnum.CREATED).end();
+
+    } catch (e) {
+      next(e);
+    }
+  }
+
+  async confirmUserAccount(req: IRequest, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const {_id} = req.user as IUser;
+
+      await userService.confirmAccount(_id, UserStatusEnum.CONFIRMED);
+      await historyService.addEvent({event: HistoryEvent.confirmAccount, userId: _id});
+
+      res.end();
 
     } catch (e) {
       next(e);

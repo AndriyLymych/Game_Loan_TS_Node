@@ -24,7 +24,7 @@ export const tokenCreator = (method: Partial<TokenActionEnum>): { access_token: 
         {expiresIn: config.JWT_PASS_RESET_LIFETIME}
       );
       break;
-    case TokenActionEnum.AUTH_USER :
+    case TokenActionEnum.AUTH_USER_ACCESS :
       access_token = jwt.sign(
         {},
         config.JWT_ACCESS_SECRET,

@@ -8,14 +8,19 @@ export const customErrors = {
     message: 'User is already active',
     code: 4002
   },
-
-  BAD_REQUEST_NO_TOKEN: {
-    message: 'Token is not present'
+  BAD_REQUEST_USER_IS_NOT_PRESENT: {
+    message: 'User is not present',
+    code: 4003
   },
 
   //401
+  UNAUTHORIZED_TOKEN_NOT_PRESENT: {
+    message: 'Token is not present',
+    code: 4011
+  },
   UNAUTHORIZED_BAD_TOKEN: {
-    message: 'Something wrong with token'
+    message: 'Token is not valid',
+    code: 4012
   },
 
   //403
