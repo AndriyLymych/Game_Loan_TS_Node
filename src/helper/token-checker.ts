@@ -3,7 +3,7 @@ import {promisify} from 'util';
 import {TokenActionEnum} from '../constant/token';
 import {config} from '../config';
 import {customErrors, ErrorHandler} from '../errors';
-import {ResponseStatusCodeEnum} from '../constant/db';
+import {ResponseStatusCodeEnum} from '../constant';
 
 const promisedVerification = promisify(verify);
 
@@ -17,6 +17,7 @@ export const tokenChecker = async (method: TokenActionEnum, token: string): Prom
         await promisedVerification(token, config.JWT_PASS_RESET_SECRET);
         break;
       case TokenActionEnum.AUTH_USER_ACCESS:
+
         await promisedVerification(token, config.JWT_ACCESS_SECRET);
         break;
       case TokenActionEnum.AUTH_USER_REFRESH:

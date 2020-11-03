@@ -18,5 +18,11 @@ router.post(
   tokenMiddleware.verifyAndGetUserFromAuthToken(TokenActionEnum.AUTH_USER_ACCESS),
   authController.logoutUser
 );
+router.post(
+  '/refresh',
+  tokenMiddleware.checkTokenPresent,
+  tokenMiddleware.verifyAndGetUserFromAuthToken(TokenActionEnum.AUTH_USER_REFRESH),
+  authController.refreshToken
+);
 
 export const authRouter = router;
