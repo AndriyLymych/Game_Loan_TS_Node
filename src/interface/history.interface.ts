@@ -1,8 +1,6 @@
-import {HistoryEvent} from '../constant/history';
-
 export interface IHistory {
     _id: string;
-    event: HistoryEvent
+    event: string;
     userId?: string;
     createdAt: string;
 }

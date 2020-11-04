@@ -11,6 +11,10 @@ class UserService {
     return UserModel.findOne(params).exec();
   }
 
+  getUserById(_id: Partial<IUser>): Promise<IUser | null> {
+    return UserModel.findById(_id).exec();
+  }
+
   insertActionToken(id: string, tokenObj: IActionToken): Promise<IUser> {
     return UserModel.updateOne({_id: id}, {$set: {tokens: [tokenObj]}}, {runValidators: true}).exec();
   }

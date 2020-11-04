@@ -3,7 +3,7 @@ import {IRequest, IUser} from '../../interface';
 import {hashPassword, tokenCreator} from '../../helper';
 import {HistoryEvent, ResponseStatusCodeEnum, TokenActionEnum, UserRoleEnum, UserStatusEnum} from '../../constant';
 import {customErrors, ErrorHandler} from '../../errors';
-import {emailService, historyService, userService} from '../../service';
+import { historyService, userService} from '../../service';
 
 class UserController {
     createUser = (roleType: UserRoleEnum) => async (req: IRequest, res: Response, next: NextFunction) => {
@@ -33,7 +33,7 @@ class UserController {
           actionToken: access_token
         });
         await historyService.addEvent({event: HistoryEvent.createUser, userId: _id});
-        await emailService.sendEmail(email, TokenActionEnum.REGISTER_USER, {token: access_token});
+        // await emailService.sendEmail(email, TokenActionEnum.REGISTER_USER, {token: access_token});
 
         //TODO add user avatar save
         res.status(ResponseStatusCodeEnum.CREATED).end();
@@ -41,7 +41,7 @@ class UserController {
       } catch (e) {
         next(e);
       }
-    }
+    };
 
     async confirmUserAccount(req: IRequest, res: Response, next: NextFunction): Promise<void> {
       try {

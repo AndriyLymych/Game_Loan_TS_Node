@@ -16,7 +16,7 @@ import * as swaggerDoc from './docs/swagger.json';
 import {ResponseStatusCodeEnum} from './constant/db';
 import {userRouter} from './router/user';
 import {authRouter} from './router/auth';
-import {adminRouter} from "./router/admin";
+import {adminRouter} from './router/admin';
 
 const serverRequestLimit = rateLimit({
   windowMs: config.serverRateLimits.period,

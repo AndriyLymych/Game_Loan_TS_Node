@@ -4,7 +4,7 @@ export const customErrors = {
     message: 'User is already registered',
     code: 4001
   },
-  BAD_REQUEST_USER_ACTIVATED: {
+  BAD_REQUEST_USER_IS_ALREADY_ACTIVE: {
     message: 'User is already active',
     code: 4002
   },
@@ -19,6 +19,10 @@ export const customErrors = {
   BAD_REQUEST_USER_IS_BLOCKED: {
     message: 'User is blocked',
     code: 4005
+  },
+  BAD_REQUEST_USER_IS_ALREADY_BLOCKED: {
+    message: 'User is already blocked',
+    code: 4006
   },
 
   //401
@@ -46,6 +50,10 @@ export const customErrors = {
   FORBIDDEN_YOU_ARE_NOT_ADMIN: {
     message: 'You are not admin',
     code: 4034
+  },
+  FORBIDDEN_YOU_CANT_BLOCK_YOURSELF: {
+    message: 'You cant block yourself',
+    code: 4035
   },
 
   // 404

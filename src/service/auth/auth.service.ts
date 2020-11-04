@@ -17,6 +17,11 @@ class AuthService {
     return OAuthModel.findOneAndDelete(token).exec();
   }
 
+  dropAuthTokenPairByUserId(userId: string): Promise<IOAuth | null> {
+
+    return OAuthModel.findOneAndDelete({userId}).exec();
+  }
+
 }
 
 export const authService = new AuthService();

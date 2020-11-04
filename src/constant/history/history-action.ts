@@ -3,5 +3,7 @@ export enum HistoryEvent {
     confirmAccount = 'confirmAccount',
     authUser = 'authUser',
     logoutUser = 'logoutUser',
-    refreshToken = 'refreshToken'
+    refreshToken = 'refreshToken',
+    blockUser = 'blockUser',
+    unlockUser = 'unlockUser'
 }
