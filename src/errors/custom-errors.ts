@@ -43,6 +43,10 @@ export const customErrors = {
   FORBIDDEN_VALIDATION_ERROR: {
     code: 4033
   },
+  FORBIDDEN_YOU_ARE_NOT_ADMIN: {
+    message: 'You are not admin',
+    code: 4034
+  },
 
   // 404
   NOT_FOUND: {

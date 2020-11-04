@@ -2,10 +2,12 @@ import * as http from 'http';
 
 import {app} from './app';
 import {config} from './config';
+import {createMajorAdmin} from './helper';
 
 const server = http.createServer(app);
 
-server.listen(config.PORT, () => {
+server.listen(config.PORT, async () => {
+  await createMajorAdmin();
   console.log(`Listen port ${config.PORT}...`);
 });
 

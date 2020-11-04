@@ -8,6 +8,7 @@ import * as morgan from 'morgan';
 import * as mongoose from 'mongoose';
 import * as path from 'path';
 import * as swaggerUI from 'swagger-ui-express';
+
 dotenv.config();
 
 import {config} from './config';
@@ -26,7 +27,6 @@ class App {
 
     constructor() {
       (global as any).appRoot = path.resolve(process.cwd(), '../');
-
       this.app.use(morgan('dev'));
       this.app.use(helmet());
       this.app.use(serverRequestLimit);

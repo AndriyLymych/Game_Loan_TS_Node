@@ -2,7 +2,7 @@ import {IRequest} from '../../interface';
 import {NextFunction, Response} from 'express';
 import {RequestHeaderEnum, ResponseStatusCodeEnum, TokenActionEnum} from '../../constant';
 import {customErrors, ErrorHandler} from '../../errors';
-import {tokenChecker} from '../../helper/token-checker';
+import {tokenChecker} from '../../helper';
 import {authService, userService} from '../../service';
 
 class TokenMiddleware {
