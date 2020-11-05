@@ -13,10 +13,8 @@ dotenv.config();
 
 import {config} from './config';
 import * as swaggerDoc from './docs/swagger.json';
-import {ResponseStatusCodeEnum} from './constant/db';
-import {userRouter} from './router/user';
-import {authRouter} from './router/auth';
-import {adminRouter} from './router/admin';
+import {ResponseStatusCodeEnum} from './constant';
+import {adminRouter,authRouter,gameRouter,userRouter} from './router';
 
 const serverRequestLimit = rateLimit({
   windowMs: config.serverRateLimits.period,
@@ -81,6 +79,7 @@ class App {
       this.app.use('/users', userRouter);
       this.app.use('/auth', authRouter);
       this.app.use('/admin', adminRouter);
+      this.app.use('/games', gameRouter);
     }
 }
 

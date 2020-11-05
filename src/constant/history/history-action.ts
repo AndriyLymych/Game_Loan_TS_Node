@@ -5,5 +5,6 @@ export enum HistoryEvent {
     logoutUser = 'logoutUser',
     refreshToken = 'refreshToken',
     blockUser = 'blockUser',
-    unlockUser = 'unlockUser'
+    unlockUser = 'unlockUser',
+    addGame = 'addGame',
 }

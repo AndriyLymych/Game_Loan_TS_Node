@@ -1,5 +1,6 @@
 export enum DbTableNameEnum {
     USER = 'user',
     OAUTH = 'oauth',
-    HISTORY = 'history'
+    HISTORY = 'history',
+    GAME =' game'
 }
