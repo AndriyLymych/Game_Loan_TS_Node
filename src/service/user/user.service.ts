@@ -19,6 +19,10 @@ class UserService {
     return UserModel.updateOne({_id: id}, {$set: {tokens: [tokenObj]}}, {runValidators: true}).exec();
   }
 
+  updateUser(_id: string, updateObj: Partial<IUser>): Promise<IUser> {
+    return UserModel.updateOne({_id}, {$set: updateObj}).exec();
+  }
+
   confirmAccount(_id: string, status: UserStatusEnum): Promise<IUser | null> {
     return UserModel.findOneAndUpdate({_id}, {
       $set: {

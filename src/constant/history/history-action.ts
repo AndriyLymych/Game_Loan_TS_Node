@@ -7,4 +7,5 @@ export enum HistoryEvent {
     blockUser = 'blockUser',
     unlockUser = 'unlockUser',
     addGame = 'addGame',
+    changePassword = 'changePassword',
 }

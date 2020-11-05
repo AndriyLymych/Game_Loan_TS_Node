@@ -12,5 +12,12 @@ router.put(
   tokenMiddleware.verifyAndGetUserFromActionToken(TokenActionEnum.REGISTER_USER),
   userController.confirmUserAccount
 );
+router.put(
+  '/password',
+  tokenMiddleware.checkTokenPresent,
+  tokenMiddleware.verifyAndGetUserFromAuthToken(TokenActionEnum.AUTH_USER_ACCESS),
+  userMiddleware.validateChangePassword,
+  userController.changePassword
+);
 
 export const userRouter = router;
