@@ -1,9 +1,9 @@
 import {NextFunction, Response} from 'express';
 import {IRequest, IUser} from '../../interface';
-import {comparePassword, tokenCreator} from '../../helper';
+import {comparePassword, hashPassword, tokenCreator} from '../../helper';
 import {customErrors, ErrorHandler} from '../../errors';
 import {HistoryEvent, RequestHeaderEnum, ResponseStatusCodeEnum, TokenActionEnum} from '../../constant';
-import {authService, historyService} from '../../service';
+import {authService, emailService, historyService, userService} from '../../service';
 
 class AuthController {
   async authUser(req: IRequest, res: Response, next: NextFunction): Promise<void> {
@@ -72,6 +72,51 @@ class AuthController {
         accessToken,
         refreshToken
       });
+
+    } catch (e) {
+      next(e);
+    }
+  }
+
+  async sendForgotPasswordMail(req: IRequest, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const user = req.user as IUser;
+
+      const {access_token} = tokenCreator(TokenActionEnum.RESET_PASSWORD);
+
+      await userService.insertActionToken(user._id, {
+        actionToken: access_token,
+        action: TokenActionEnum.RESET_PASSWORD
+      });
+      await emailService.sendEmail(user.email, TokenActionEnum.RESET_PASSWORD, {token: access_token});
+      await historyService.addEvent({event: HistoryEvent.sendResetPasswordMail, userId: user._id});
+
+      res.end();
+
+    } catch (e) {
+      next(e);
+    }
+  }
+
+  async resetPassword(req: IRequest, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const {password, passwordAgain} = req.body;
+      const {_id: userId} = req.user as IUser;
+
+      if (password !== passwordAgain) {
+        throw new ErrorHandler(
+          ResponseStatusCodeEnum.FORBIDDEN,
+          customErrors.FORBIDDEN_PASSWORDS_NOT_EQUAL.message,
+          customErrors.FORBIDDEN_PASSWORDS_NOT_EQUAL.code
+        );
+      }
+
+      const newPassword: string = await hashPassword(password);
+
+      await userService.updateUser(userId, {password: newPassword, tokens: []});
+      await historyService.addEvent({event: HistoryEvent.resetPassword, userId});
+
+      res.end();
 
     } catch (e) {
       next(e);

@@ -8,4 +8,6 @@ export enum HistoryEvent {
     unlockUser = 'unlockUser',
     addGame = 'addGame',
     changePassword = 'changePassword',
+    sendResetPasswordMail = 'sendResetPasswordMail',
+    resetPassword = 'resetPassword'
 }
