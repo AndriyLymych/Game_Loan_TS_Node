@@ -97,6 +97,25 @@ class UserController {
         next(e);
       }
     }
+
+    async updateUserProfile(req: IRequest, res: Response, next: NextFunction) {
+      try {
+        const {gender, phone, name, age, surname} = req.body as IUser;
+        const {_id} = req.user as IUser;
+
+        await userService.updateUser(_id, {
+          name,
+          surname,
+          phone,
+          gender,
+          age
+        });
+
+        res.end();
+      } catch (e) {
+        next(e);
+      }
+    }
 }
 
 export const userController = new UserController();

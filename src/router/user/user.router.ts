@@ -12,12 +12,20 @@ router.put(
   tokenMiddleware.verifyAndGetUserFromActionToken(TokenActionEnum.REGISTER_USER),
   userController.confirmUserAccount
 );
+
+router.use(
+  tokenMiddleware.checkTokenPresent,
+  tokenMiddleware.verifyAndGetUserFromAuthToken(TokenActionEnum.AUTH_USER_ACCESS)
+);
 router.put(
   '/password',
-  tokenMiddleware.checkTokenPresent,
-  tokenMiddleware.verifyAndGetUserFromAuthToken(TokenActionEnum.AUTH_USER_ACCESS),
   userMiddleware.validateChangePassword,
   userController.changePassword
+);
+router.put(
+  '/',
+  userMiddleware.validateUpdateUserData,
+  userController.updateUserProfile
 );
 
 export const userRouter = router;

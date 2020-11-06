@@ -2,7 +2,7 @@ import {validate} from 'joi';
 
 import {NextFunction, Request, Response} from 'express';
 import {IRequest, IUser} from '../../interface';
-import {changePasswordValidator, createUserValidator} from '../../validators';
+import {changePasswordValidator, createUserValidator, updateUserValidator} from '../../validators';
 import {customErrors, ErrorHandler} from '../../errors';
 import {ResponseStatusCodeEnum, UserStatusEnum} from '../../constant';
 import {userService} from '../../service';
@@ -28,6 +28,21 @@ class UserMiddleware {
     const passwordData = req.body;
 
     const {error} = validate(passwordData, changePasswordValidator);
+
+    if (error) {
+      return next(new ErrorHandler(
+        ResponseStatusCodeEnum.FORBIDDEN,
+        error.details[0].message,
+        customErrors.FORBIDDEN_VALIDATION_ERROR.code
+      ));
+    }
+
+    next();
+  }
+  validateUpdateUserData(req: Request, res: Response, next: NextFunction) {
+    const updateData = req.body;
+
+    const {error} = validate(updateData, updateUserValidator);
 
     if (error) {
       return next(new ErrorHandler(
