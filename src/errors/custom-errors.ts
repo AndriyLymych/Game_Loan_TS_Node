@@ -24,6 +24,14 @@ export const customErrors = {
     message: 'User is already blocked',
     code: 4006
   },
+  BAD_REQUEST_USER_NOT_FOUND: {
+    message: 'User is not found',
+    code: 4007
+  },
+  BAD_REQUEST_GAME_IS_NOT_FOUND: {
+    message: 'Game is not found',
+    code: 4008
+  },
 
   //401
   UNAUTHORIZED_TOKEN_NOT_PRESENT: {

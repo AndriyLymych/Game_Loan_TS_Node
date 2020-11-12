@@ -10,9 +10,7 @@ class UserController {
       try {
         const user: IUser = req.body;
         const {email} = user;
-
         const userExist = await userService.getUserByParams({email});
-
         if (userExist) {
           throw new ErrorHandler(
             ResponseStatusCodeEnum.BAD_REQUEST,
@@ -98,7 +96,7 @@ class UserController {
       }
     }
 
-    async updateUserProfile(req: IRequest, res: Response, next: NextFunction) {
+    async updateUserProfile(req: IRequest, res: Response, next: NextFunction): Promise<void> {
       try {
         const {gender, phone, name, age, surname} = req.body as IUser;
         const {_id} = req.user as IUser;
@@ -110,8 +108,40 @@ class UserController {
           gender,
           age
         });
-
+        await historyService.addEvent({event: HistoryEvent.updateUserProfile, userId: _id});
         res.end();
+      } catch (e) {
+        next(e);
+      }
+    }
+
+    async findUsersOrUserByName(req: IRequest, res: Response, next: NextFunction): Promise<void> {
+      try {
+        const {name='', limit} = req.query;
+        let {page = 1} = req.query;
+
+        let users: IUser[] = [];
+
+        if (+page === 0) {page = 1;}
+        page = +page - 1;
+
+        if (!name) {
+          users = await userService.getAllUsers(Number(limit), Number(limit) * +page);
+        }
+        if (name) {
+          users = await userService.findUserByNameOrSurname(String(name), Number(limit), Number(limit) * +page);
+        }
+
+        if (!users.length) {
+          throw new ErrorHandler(
+            ResponseStatusCodeEnum.BAD_REQUEST,
+            customErrors.BAD_REQUEST_USER_NOT_FOUND.message,
+            customErrors.BAD_REQUEST_USER_NOT_FOUND.code
+          );
+        }
+
+        res.json(users);
+
       } catch (e) {
         next(e);
       }

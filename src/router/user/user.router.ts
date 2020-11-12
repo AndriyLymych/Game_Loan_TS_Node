@@ -1,11 +1,11 @@
 import {Router} from 'express';
 import {userController} from '../../controller';
-import {tokenMiddleware, userMiddleware} from '../../middleware';
-import {TokenActionEnum} from '../../constant';
+import {adminMiddleware, tokenMiddleware, userMiddleware} from '../../middleware';
+import {TokenActionEnum, UserRoleEnum} from '../../constant';
 
 const router = Router();
 
-router.post('/', userMiddleware.validateUser, userController.createUser);
+router.post('/', userMiddleware.validateUser, userController.createUser(UserRoleEnum.USER));
 router.put(
   '/confirm',
   tokenMiddleware.checkTokenPresent,
@@ -27,5 +27,6 @@ router.put(
   userMiddleware.validateUpdateUserData,
   userController.updateUserProfile
 );
+router.get('/', adminMiddleware.isAdminChecker, userController.findUsersOrUserByName);
 
 export const userRouter = router;

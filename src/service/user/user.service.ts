@@ -35,6 +35,30 @@ class UserService {
   getUserFromActionToken(actionToken: string): Promise<IUser | null> {
     return UserModel.findOne({'tokens.actionToken': actionToken}).exec();
   }
+
+  getAllUsers(limit: number, offset: number): Promise<IUser[]> {
+    return UserModel
+      .find(
+        {},
+        {name: 1, surname: 1, status: 1})
+      .limit(limit)
+      .skip(offset)
+      .exec();
+  }
+
+  findUserByNameOrSurname(name: string, limit: number, offset: number): Promise<IUser[]> {
+
+    return UserModel.find({
+      $or: [
+        {name: {$regex: `${name}`, $options: 'i'}},
+        {surname: {$regex: `${name}`, $options: 'i'}}
+      ]
+
+    }, {name: 1, surname: 1, status: 1})
+      .limit(limit)
+      .skip(offset)
+      .exec();
+  }
 }
 
 export const userService = new UserService();
