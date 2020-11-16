@@ -12,4 +12,7 @@ export enum HistoryEvent {
     resetPassword = 'reset password',
     updateUserProfile = 'update user profile',
     editGame = 'edit game',
+    addGameCredentials = 'add game credentials',
+    editGameCredentials = 'edit game credentials',
+    deleteGameCredentials = 'delete game credentials',
 }

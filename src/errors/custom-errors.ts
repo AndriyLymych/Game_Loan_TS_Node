@@ -32,6 +32,14 @@ export const customErrors = {
     message: 'Game is not found',
     code: 4008
   },
+  BAD_REQUEST_CREDENTIALS_IS_ALREADY_EXISTS: {
+    message: 'Credentials is already exists',
+    code: 4009
+  },
+  BAD_REQUEST_CREDENTIALS_IS_NOT_FOUND: {
+    message: 'Credentials is not found',
+    code: 40010
+  },
 
   //401
   UNAUTHORIZED_TOKEN_NOT_PRESENT: {

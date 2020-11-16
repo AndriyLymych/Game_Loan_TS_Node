@@ -31,6 +31,7 @@ class GameController {
       await historyService.addEvent({event: `${HistoryEvent.editGame} with id ${gameId}`, userId});
 
       res.status(ResponseStatusCodeEnum.CREATED).end();
+      //TODO
 
     } catch (e) {
       next(e);

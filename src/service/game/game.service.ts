@@ -10,8 +10,9 @@ class GameService {
     return GameModel.findByIdAndUpdate(_id, params).exec();
   }
 
-  getGameById(_id: string, params: Partial<IGame>): Promise<IGame | null> {
-    return GameModel.findByIdAndUpdate(_id, params).exec();
+  getGameById(_id: Partial<IGame>): Promise<IGame | null> {
+    return GameModel.findById(_id).exec();
+
   }
 
   getGames(limit: number, offset: number): Promise<IGame[]> {

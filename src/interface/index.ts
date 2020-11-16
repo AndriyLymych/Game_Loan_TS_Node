@@ -4,3 +4,4 @@ export * from './oauth.interface';
 export * from './request.interface';
 export * from './request.interface';
 export * from './game.interface';
+export * from './game-credential.interface';
