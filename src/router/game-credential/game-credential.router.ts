@@ -11,6 +11,8 @@ router.use(
   adminMiddleware.isAdminChecker
 );
 
+router.get('/', gameCredentialController.getCredentialsByGameName);
+
 router.post(
   '/',
   gameCredentialMiddleware.validateCreateAndUpdateCredentials,
@@ -25,6 +27,6 @@ router.put(
   gameCredentialController.editCredential
 );
 
-router.delete('/',gameCredentialController.deleteCredential);
+router.delete('/', gameCredentialController.deleteCredential);
 
 export const gameCredentialRouter = router;

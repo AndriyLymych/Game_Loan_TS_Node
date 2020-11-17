@@ -40,6 +40,10 @@ export const customErrors = {
     message: 'Credentials is not found',
     code: 40010
   },
+  BAD_REQUEST_NO_CREDENTIAL_RECORDS: {
+    message: 'No credential records',
+    code: 40011
+  },
 
   //401
   UNAUTHORIZED_TOKEN_NOT_PRESENT: {

@@ -10,7 +10,7 @@ class GameService {
     return GameModel.findByIdAndUpdate(_id, params).exec();
   }
 
-  getGameById(_id: Partial<IGame>): Promise<IGame | null> {
+  getGameById(_id: string): Promise<IGame | null> {
     return GameModel.findById(_id).exec();
 
   }
