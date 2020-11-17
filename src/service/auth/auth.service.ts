@@ -22,6 +22,10 @@ class AuthService {
     return OAuthModel.findOneAndDelete({userId}).exec();
   }
 
+  getAllRecords(): Promise<IOAuth[]> {
+    return OAuthModel.find().exec();
+  }
+
 }
 
 export const authService = new AuthService();
