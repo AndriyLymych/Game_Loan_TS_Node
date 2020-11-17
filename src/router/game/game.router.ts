@@ -22,5 +22,6 @@ router.post(
 router.use(gameMiddleware.isGameExists);
 
 router.put('/', gameMiddleware.validateEditGame, gameController.editGame);
+router.delete('/', gameController.deleteGame);
 
 export const gameRouter = router;

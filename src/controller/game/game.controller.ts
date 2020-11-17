@@ -27,8 +27,23 @@ class GameController {
             const {_id: gameId} = req.game as IGame;
             const {_id: userId} = req.user as IUser;
 
-            await gameService.editGameById(gameId as string, {title, description, genre, size, version});
+            await gameService.editGameById(gameId, {title, description, genre, size, version});
             await historyService.addEvent({event: `${HistoryEvent.editGame} with id ${gameId}`, userId});
+
+            res.end();
+
+        } catch (e) {
+            next(e);
+        }
+    }
+
+    async deleteGame(req: IRequest, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const {_id: gameId} = req.game as IGame;
+            const {_id: userId} = req.user as IUser;
+
+            await gameService.deleteGameById(gameId);
+            await historyService.addEvent({event: `${HistoryEvent.deleteGame} with id ${gameId}`, userId});
 
             res.end();
 
