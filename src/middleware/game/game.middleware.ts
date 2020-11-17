@@ -4,59 +4,59 @@ import {validate} from 'joi';
 import {createGameValidator, editGameValidator} from '../../validators';
 import {customErrors, ErrorHandler} from '../../errors';
 import {ResponseStatusCodeEnum} from '../../constant';
-import {gameService} from "../../service/game";
+import {gameService} from '../../service/game';
 
 class GameMiddleware {
-    validateGame(req: IRequest, res: Response, next: NextFunction) {
+  validateGame(req: IRequest, res: Response, next: NextFunction) {
 
-        const game: Partial<IGame> = req.body;
-        const {error} = validate(game, createGameValidator);
+    const game: Partial<IGame> = req.body;
+    const {error} = validate(game, createGameValidator);
 
-        if (error) {
-            return next(new ErrorHandler(
-                ResponseStatusCodeEnum.FORBIDDEN,
-                error.details[0].message,
-                customErrors.FORBIDDEN_VALIDATION_ERROR.code
-            ));
-        }
-        next();
+    if (error) {
+      return next(new ErrorHandler(
+        ResponseStatusCodeEnum.FORBIDDEN,
+        error.details[0].message,
+        customErrors.FORBIDDEN_VALIDATION_ERROR.code
+      ));
     }
-    validateEditGame(req: IRequest, res: Response, next: NextFunction) {
+    next();
+  }
+  validateEditGame(req: IRequest, res: Response, next: NextFunction) {
 
-        const game: Partial<IGame> = req.body;
-        const {error} = validate(game, editGameValidator);
+    const game: Partial<IGame> = req.body;
+    const {error} = validate(game, editGameValidator);
 
-        if (error) {
-            return next(new ErrorHandler(
-                ResponseStatusCodeEnum.FORBIDDEN,
-                error.details[0].message,
-                customErrors.FORBIDDEN_VALIDATION_ERROR.code
-            ));
-        }
-        next();
+    if (error) {
+      return next(new ErrorHandler(
+        ResponseStatusCodeEnum.FORBIDDEN,
+        error.details[0].message,
+        customErrors.FORBIDDEN_VALIDATION_ERROR.code
+      ));
     }
+    next();
+  }
 
-    async isGameExists(req: IRequest, res: Response, next: NextFunction): Promise<void> {
+  async isGameExists(req: IRequest, res: Response, next: NextFunction): Promise<void> {
 
-        try {
-            const {id} = req.query;
+    try {
+      const {id} = req.query;
 
-            const isGameExists = await gameService.getGameById(id as string);
+      const isGameExists = await gameService.getGameById(id as string);
 
-            if (!isGameExists) {
-                throw new ErrorHandler(
-                    ResponseStatusCodeEnum.BAD_REQUEST,
-                    customErrors.BAD_REQUEST_GAME_IS_NOT_FOUND.message,
-                    customErrors.BAD_REQUEST_GAME_IS_NOT_FOUND.code
-                )
-            }
+      if (!isGameExists) {
+        throw new ErrorHandler(
+          ResponseStatusCodeEnum.BAD_REQUEST,
+          customErrors.BAD_REQUEST_GAME_IS_NOT_FOUND.message,
+          customErrors.BAD_REQUEST_GAME_IS_NOT_FOUND.code
+        );
+      }
 
-            req.game = isGameExists;
-            next();
-        } catch (e) {
-            next(e)
-        }
+      req.game = isGameExists;
+      next();
+    } catch (e) {
+      next(e);
     }
+  }
 
 }
 

@@ -6,6 +6,7 @@ import {TokenActionEnum} from '../../constant';
 const router = Router();
 
 router.get('/', gameController.getAllGamesOrGameByName);
+router.get('/rate', gameMiddleware.isGameExists, gameController.getAvgMark);
 
 router.use(
     tokenMiddleware.checkTokenPresent,

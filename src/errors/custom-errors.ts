@@ -44,6 +44,10 @@ export const customErrors = {
     message: 'No credential records',
     code: 40011
   },
+  BAD_REQUEST_NO_COMMENTS: {
+    message: 'No comments',
+    code: 40012
+  },
 
   //401
   UNAUTHORIZED_TOKEN_NOT_PRESENT: {
