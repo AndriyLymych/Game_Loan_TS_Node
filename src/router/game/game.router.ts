@@ -9,15 +9,15 @@ router.get('/', gameController.getAllGamesOrGameByName);
 router.get('/rate', gameMiddleware.isGameExists, gameController.getAvgMark);
 
 router.use(
-    tokenMiddleware.checkTokenPresent,
-    tokenMiddleware.verifyAndGetUserFromAuthToken(TokenActionEnum.AUTH_USER_ACCESS),
-    adminMiddleware.isAdminChecker
+  tokenMiddleware.checkTokenPresent,
+  tokenMiddleware.verifyAndGetUserFromAuthToken(TokenActionEnum.AUTH_USER_ACCESS),
+  adminMiddleware.isAdminChecker
 );
 
 router.post(
-    '/',
-    gameMiddleware.validateGame,
-    gameController.addGame
+  '/',
+  gameMiddleware.validateGame,
+  gameController.addGame
 );
 
 router.use(gameMiddleware.isGameExists);

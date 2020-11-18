@@ -13,7 +13,7 @@ export interface IGame {
     description: string;
     version: IGameType[];
     genre: GameGenreEnum[];
-    rate?: number[];
+    rate?: number;
     size: number;
     createdAt: string;
 }
