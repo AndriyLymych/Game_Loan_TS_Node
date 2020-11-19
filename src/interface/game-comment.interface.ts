@@ -1,10 +1,8 @@
-interface IReplyComment {
-    _id: string,
-    replyComment: string,
-    userId: string,
-    commentId: string
-    createdAt: string
-    updatedAt: string
+export interface IReplyComment {
+    comment?: string,
+    userId?: string,
+    createdAt?: string
+    updatedAt?: string
 
 }
 
@@ -14,7 +12,7 @@ export interface IGameComment {
     rate: number,
     userId: string,
     gameId: string,
-    repliedComments: Array<IReplyComment>
+    replyComments: [IReplyComment]
     createdAt: string
     updatedAt: string
 }

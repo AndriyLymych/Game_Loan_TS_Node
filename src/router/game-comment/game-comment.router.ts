@@ -20,6 +20,13 @@ router.post(
   gameCommentController.addComment
 );
 
+router.post(
+  '/reply/:id',
+  gameCommentMiddleware.validateNewComment,
+  gameCommentMiddleware.commentExists,
+  gameCommentController.addReplyComment
+);
+
 router.put(
   '/:id',
   gameCommentMiddleware.validateNewComment,

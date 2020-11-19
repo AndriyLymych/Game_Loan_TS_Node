@@ -24,33 +24,17 @@ const GameCommentSchema: Schema = new Schema<IGameComment>({
     required: true
   },
   replyComments: [{
-    replyComment: {
+    comment: {
       type: String
     },
     userId: {
       type: Schema.Types.ObjectId,
       ref: DbTableNameEnum.USER
-    },
-    commentId: {
-      type: Schema.Types.ObjectId
-    },
-    createdAt: {
-      type: Date,
-      default: Date.now()
-    },
-    updatedAt: {
-      type: Date,
-      default: Date.now()
     }
-  }],
-  createdAt: {
-    type: Date,
-    default: Date.now()
-  },
-  updatedAt: {
-    type: Date,
-    default: Date.now()
-  }
+  }]
+},
+{
+  timestamps: true
 });
 
 export const GameCommentModel: Model<GameCommentType> = model<GameCommentType>(

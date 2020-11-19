@@ -29,6 +29,12 @@ class GameCommentService {
   deleteCommentRecord(commentId: string): Promise<IGameComment | null> {
     return GameCommentModel.findByIdAndDelete(commentId).exec();
   }
+
+  addReplyComment(_id: string, params: any): Promise<IGameComment | null> {
+    console.log('22.log');
+
+    return GameCommentModel.update({_id}, {$push: {replyComments: params}}).exec();
+  }
 }
 
 export const gameCommentService = new GameCommentService();

@@ -59,7 +59,6 @@ class GameCommentController {
       const commentExist = await gameCommentService.getCommentById(id);
 
       if (!commentExist || commentExist.userId.toString() !== _id.toString()) {
-        //TODO
 
         throw new ErrorHandler(
           ResponseStatusCodeEnum.BAD_REQUEST,
@@ -68,7 +67,9 @@ class GameCommentController {
         );
       }
 
-      await gameCommentService.updateCommentRecord(commentExist._id, _id, {comment});
+      await gameCommentService.updateCommentRecord(commentExist._id, _id, {
+        comment
+      });
       await historyService.addEvent(
         {
           event: `${HistoryEvent.editGameComment} with id ${commentExist._id}`,
@@ -86,9 +87,9 @@ class GameCommentController {
   async deleteComment(req: IRequest, res: Response, next: NextFunction): Promise<void> {
     try {
       const {id} = req.params;
-      const {_id, role} = req.user as IUser;
-      console.log(role !== UserRoleEnum.ADMIN);
-      const isCommentExists = await gameCommentService.getCommentById(id);
+      const user = req.user as IUser;
+
+      const isCommentExists = await gameCommentService.getCommentById(id) as IGameComment;
 
       if (!isCommentExists) {
         throw new ErrorHandler(
@@ -98,8 +99,8 @@ class GameCommentController {
         );
       }
 
-      if (role !== UserRoleEnum.ADMIN && isCommentExists.userId.toString() !== _id.toString()) {
-        // todo
+      if (user.role !== UserRoleEnum.ADMIN && isCommentExists.userId.toString() !== user._id.toString()) {
+
         throw new ErrorHandler(
           ResponseStatusCodeEnum.FORBIDDEN,
           customErrors.FORBIDDEN_YOU_CANT_DELETE_COMMENT.message,
@@ -110,6 +111,22 @@ class GameCommentController {
       await gameCommentService.deleteCommentRecord(isCommentExists._id);
 
       res.end();
+
+    } catch (e) {
+      next(e);
+    }
+  }
+
+  async addReplyComment(req: IRequest, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const {comment} = req.body ;
+      const {_id: userId} = req.user as IUser;
+      const {_id: commentId} = req.comment as IGameComment;
+
+      await gameCommentService.addReplyComment(commentId, {comment ,userId});
+      await historyService.addEvent({event: HistoryEvent.addGameComment, userId});
+
+      res.status(ResponseStatusCodeEnum.CREATED).end();
 
     } catch (e) {
       next(e);
