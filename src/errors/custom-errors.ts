@@ -48,6 +48,10 @@ export const customErrors = {
     message: 'No comments',
     code: 40012
   },
+  BAD_REQUEST_COMMENT_IS_NOT_PRESENT: {
+    message: 'Comment is not present',
+    code: 40013
+  },
 
   //401
   UNAUTHORIZED_TOKEN_NOT_PRESENT: {
@@ -90,6 +94,10 @@ export const customErrors = {
   FORBIDDEN_PASSWORD_EQUAL_OLD_PASSWORD: {
     message: 'Password match to old password',
     code: 4038
+  },
+  FORBIDDEN_YOU_CANT_DELETE_COMMENT: {
+    message: 'You cant delete this comment',
+    code: 4039
   },
 
   // 404

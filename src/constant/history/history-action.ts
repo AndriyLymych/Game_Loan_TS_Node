@@ -17,4 +17,6 @@ export enum HistoryEvent {
     editGameCredentials = 'edit game credentials',
     deleteGameCredentials = 'delete game credentials',
     addGameComment = 'add game comment',
+    editGameComment = 'edit game comment',
+
 }

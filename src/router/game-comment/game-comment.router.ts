@@ -20,4 +20,14 @@ router.post(
   gameCommentController.addComment
 );
 
+router.put(
+  '/:id',
+  gameCommentMiddleware.validateNewComment,
+  gameCommentController.editComment
+);
+router.delete(
+  '/:id',
+  gameCommentController.deleteComment
+);
+
 export const gameCommentRouter = router;
