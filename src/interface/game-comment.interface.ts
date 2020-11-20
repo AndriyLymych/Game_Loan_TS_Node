@@ -1,4 +1,5 @@
 export interface IReplyComment {
+    _id:string,
     comment?: string,
     userId?: string,
     createdAt?: string

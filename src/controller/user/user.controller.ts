@@ -10,7 +10,9 @@ class UserController {
       try {
         const user: IUser = req.body;
         const {email} = user;
+
         const userExist = await userService.getUserByParams({email});
+
         if (userExist) {
           throw new ErrorHandler(
             ResponseStatusCodeEnum.BAD_REQUEST,
@@ -108,7 +110,9 @@ class UserController {
           gender,
           age
         });
+
         await historyService.addEvent({event: HistoryEvent.updateUserProfile, userId: _id});
+
         res.end();
       } catch (e) {
         next(e);
@@ -117,12 +121,14 @@ class UserController {
 
     async findUsersOrUserByName(req: IRequest, res: Response, next: NextFunction): Promise<void> {
       try {
-        const {name='', limit} = req.query;
+        const {name = '', limit} = req.query;
         let {page = 1} = req.query;
 
         let users: IUser[] = [];
 
-        if (+page === 0) {page = 1;}
+        if (+page === 0) {
+          page = 1;
+        }
         page = +page - 1;
 
         if (!name) {

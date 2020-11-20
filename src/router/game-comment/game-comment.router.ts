@@ -5,7 +5,6 @@ import {TokenActionEnum} from '../../constant/token';
 import {gameCommentController} from '../../controller/game-comment';
 
 const router = Router();
-
 router.get('/', gameMiddleware.isGameExists, gameCommentController.getAllCommentsForGame);
 
 router.use(
@@ -25,6 +24,15 @@ router.post(
   gameCommentMiddleware.validateNewComment,
   gameCommentMiddleware.commentExists,
   gameCommentController.addReplyComment
+);
+
+router.put('/reply/:id',
+  gameCommentMiddleware.validateNewComment,
+  gameCommentController.editReplyComment
+);
+
+router.delete('/reply/:id',
+  gameCommentController.deleteReplyComment
 );
 
 router.put(
