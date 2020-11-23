@@ -52,6 +52,10 @@ export const customErrors = {
     message: 'Comment is not present',
     code: 40013
   },
+  BAD_REQUEST_GAME_ALREADY_PRESENT_IN_CART: {
+    message: 'Game is already present in cart',
+    code: 40014
+  },
 
   //401
   UNAUTHORIZED_TOKEN_NOT_PRESENT: {

@@ -5,4 +5,6 @@ export enum DbTableNameEnum {
     GAME = 'game',
     GAME_CREDENTIAL = 'game_credential',
     GAME_COMMENT = 'game_comment',
+    CART = 'cart',
+    ORDER = 'order'
 }

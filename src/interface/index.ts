@@ -6,3 +6,5 @@ export * from './request.interface';
 export * from './game.interface';
 export * from './game-credential.interface';
 export * from './game-comment.interface';
+export * from './cart.interface';
+export * from './order.interface';

@@ -5,3 +5,4 @@ export * from './user';
 export * from './history';
 export * from './admin';
 export * from './game';
+export * from './order';
