@@ -56,6 +56,10 @@ export const customErrors = {
     message: 'Game is already present in cart',
     code: 40014
   },
+  BAD_REQUEST_CART_IS_NOT_EXISTS: {
+    message: 'Cart is not exists',
+    code: 40015
+  },
 
   //401
   UNAUTHORIZED_TOKEN_NOT_PRESENT: {

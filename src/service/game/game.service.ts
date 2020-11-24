@@ -1,5 +1,6 @@
 import {IGame} from '../../interface';
 import {GameModel} from '../../database/models';
+import {GameVersionEnum} from '../../constant/game';
 
 class GameService {
   addGame(game: Partial<IGame>): Promise<IGame> {
@@ -20,7 +21,7 @@ class GameService {
   }
 
   getGames(limit: number, offset: number): Promise<IGame[]> {
-    return GameModel.find()
+    return GameModel.find({version: GameVersionEnum.P3})
       .limit(limit)
       .skip(offset)
       .exec();
@@ -28,7 +29,8 @@ class GameService {
 
   getGamesByName(name: string, limit: number, offset: number): Promise<IGame[]> {
     return GameModel.find({
-      title: {$regex: `${name}`, $options: 'i'}
+      title: {$regex: `${name}`, $options: 'i'},
+      version: GameVersionEnum.P3
     })
       .limit(limit)
       .skip(offset)

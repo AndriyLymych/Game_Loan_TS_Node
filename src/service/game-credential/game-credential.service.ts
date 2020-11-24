@@ -29,7 +29,7 @@ class GameCredentialService {
     return GameCredentialModel.find().populate({
       path: 'gameId',
       match: {title: {$regex: `${name}`, $options: 'i'}},
-      select: 'title'
+      select: 'title version'
 
     }).limit(limit).skip(offset).exec();
   }

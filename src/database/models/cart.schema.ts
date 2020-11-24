@@ -16,7 +16,7 @@ const CartSchema: Schema = new Schema<ICart>({
       required: false,
       default: 1
     },
-    version: {
+    type: {
       type: String,
       required: false
     }

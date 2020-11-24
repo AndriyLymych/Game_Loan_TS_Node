@@ -9,5 +9,5 @@ export interface IRequest extends Request {
     user?: IUser,
     credentials?: IGameCredential,
     game?: IGame,
-    comment?: IGameComment
+    comment?: IGameComment,
 }

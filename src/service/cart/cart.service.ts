@@ -7,7 +7,10 @@ class CartService {
   }
 
   getCartByParams(userId: string): Promise<ICart | null> {
-    return CartModel.findOne({userId}).exec();
+    return CartModel.findOne({userId}, 'games.type games.loan_time -_id').populate({
+      path: 'games.gameId',
+      select: 'title version -_id'
+    }).exec();
   }
 
   addProduct(userId: string, params: IGameCart): Promise<ICart | null> {

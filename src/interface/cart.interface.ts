@@ -3,7 +3,7 @@ import {GameVersionEnum} from '../constant/game';
 export interface IGameCart {
     gameId?: string,
     loan_time?: number,
-    version?: GameVersionEnum
+    type?: GameVersionEnum
 }
 
 export interface ICart {

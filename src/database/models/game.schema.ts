@@ -17,26 +17,24 @@ const GameSchema: Schema = new Schema<IGame>({
     type: String,
     required: true
   },
-  version: [{
-    type: {
-      type: String,
-      required: true
-    },
-    status: {
-      type: String,
-      required: false,
-      default: GameStatusEnum.AVAILABLE
-    },
-    price: {
-      type: String,
-      required: true
-
-    }
-  }],
-  genre: {
+  version: {
     type: String,
     required: true
   },
+  status: {
+    type: String,
+    required: false,
+    default: GameStatusEnum.AVAILABLE
+  },
+  price: {
+    type: String,
+    required: true
+
+  },
+  genre: [{
+    type: String,
+    required: true
+  }],
   rate: {
     type: Number,
     required: false,
@@ -45,11 +43,9 @@ const GameSchema: Schema = new Schema<IGame>({
   size: {
     type: Number,
     required: false
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now()
   }
+}, {
+  timestamps: true
 });
 
 export const GameModel: Model<GameType> = model<GameType>(DbTableNameEnum.GAME, GameSchema);
