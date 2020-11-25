@@ -20,7 +20,7 @@ import {
   cartRouter,
   gameCommentRouter,
   gameCredentialRouter,
-  gameRouter,
+  gameRouter, orderRouter,
   userRouter
 } from './router';
 
@@ -91,6 +91,7 @@ class App {
       this.app.use('/credentials', gameCredentialRouter);
       this.app.use('/comments', gameCommentRouter);
       this.app.use('/cart', cartRouter);
+      this.app.use('/orders', orderRouter);
     }
 }
 

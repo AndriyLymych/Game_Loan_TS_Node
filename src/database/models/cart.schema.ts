@@ -15,10 +15,6 @@ const CartSchema: Schema = new Schema<ICart>({
       type: Number,
       required: false,
       default: 1
-    },
-    type: {
-      type: String,
-      required: false
     }
   }],
   userId: {

@@ -36,6 +36,15 @@ class GameService {
       .skip(offset)
       .exec();
   }
+
+  getAllGamesByName(name: string, limit: number, offset: number): Promise<IGame[]> {
+    return GameModel.find({
+      title: {$regex: `${name}`, $options: 'i'}
+    },'title version')
+      .limit(limit)
+      .skip(offset)
+      .exec();
+  }
 }
 
 export const gameService = new GameService();

@@ -11,7 +11,10 @@ router.use(
   tokenMiddleware.checkTokenPresent,
   tokenMiddleware.verifyAndGetUserFromAuthToken(TokenActionEnum.AUTH_USER_ACCESS)
 );
+router.put('/:itemId', cartMiddleware.validateCartData, cartController.editCartPositionLoanTime);
 router.get('/', cartController.getAuthorizedCart);
-router.post('/', cartMiddleware.validateCartData, cartController.addGameToCart);
+router.post('/', cartController.addGameToCart);
+router.delete('/item/:itemId', cartController.deleteCartPosition);
+router.delete('/:cartId', cartController.clearCart);
 
 export const cartRouter = router;

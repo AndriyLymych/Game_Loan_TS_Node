@@ -24,7 +24,7 @@ class GameCredentialService {
       select: 'title'
     }).limit(limit).skip(offset).exec();
   }
-  // }
+
   getAllCredentialsByGameName(name: string, limit: number, offset: number): Promise<IGameCredential[]> {
     return GameCredentialModel.find().populate({
       path: 'gameId',

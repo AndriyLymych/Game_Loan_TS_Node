@@ -60,6 +60,14 @@ export const customErrors = {
     message: 'Cart is not exists',
     code: 40015
   },
+  BAD_REQUEST_GAME_IS_NOT_AVAILABLE_NOW: {
+    message: 'Game is not available now',
+    code: 40016
+  },
+  BAD_REQUEST_GAME_IS_NOT_PRESENT_IN_CART: {
+    message: 'Game is not present in cart',
+    code: 40017
+  },
 
   //401
   UNAUTHORIZED_TOKEN_NOT_PRESENT: {

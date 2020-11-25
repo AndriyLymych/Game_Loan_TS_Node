@@ -1,15 +1,15 @@
-import {IRequest, IUser} from '../../interface';
+import {IGameCart, IRequest, IUser} from '../../interface';
 import {NextFunction, Response} from 'express';
 import {cartService, gameService} from '../../service';
 import {customErrors, ErrorHandler} from '../../errors';
 import {ResponseStatusCodeEnum} from '../../constant/';
+import {calculateCartHelper} from '../../helper';
 
 class CartController {
   async addGameToCart(req: IRequest, res: Response, next: NextFunction): Promise<void> {
     try {
       const {_id: userId} = req.user as IUser;
       const {gameId} = req.query;
-      const {type} = req.body;
 
       const cartExist = await cartService.getCartByParams(userId);
 
@@ -27,7 +27,7 @@ class CartController {
         );
       }
 
-      await cartService.addProduct(userId, {gameId: gameId as string, type});
+      await cartService.addProduct(userId, {gameId: gameId as string});
 
       res.status(ResponseStatusCodeEnum.CREATED).end();
 
@@ -46,6 +46,7 @@ class CartController {
 
       await Promise.all(gamesId.map(async (id: string) => {
         const game = await gameService.getGameById(id) as any;
+
         games.push(game);
 
       }));
@@ -72,12 +73,10 @@ class CartController {
         );
       }
 
-      // const acc = cartExists.games.reduce((pr: number, {loan_time,gameId,type}) => {
-      //   return pr += loan_time as number * 2;
-      //
-      // }, 0);
-      // console.log(acc);
+      const totalSum = calculateCartHelper(cartExists);
+
       cartInfo.cart = cartExists;
+      cartInfo.totalSum = totalSum;
 
       res.json(cartInfo);
 
@@ -85,6 +84,80 @@ class CartController {
       next(e);
     }
   }
+
+  async editCartPositionLoanTime(req: IRequest, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const {itemId} = req.params;
+      const {_id} = req.user as IUser;
+      const {loan_time} = req.body as IGameCart;
+
+      const cartItem = await cartService.getCartItem(itemId);
+
+      if (!cartItem || _id.toString() !== cartItem.userId.toString()) {
+        throw new ErrorHandler(
+          ResponseStatusCodeEnum.BAD_REQUEST,
+          customErrors.BAD_REQUEST_GAME_IS_NOT_PRESENT_IN_CART.message,
+          customErrors.BAD_REQUEST_GAME_IS_NOT_PRESENT_IN_CART.code
+        );
+      }
+
+      await cartService.editCartItemLoanTime(itemId, loan_time as number);
+
+      res.end();
+
+    } catch (e) {
+      next(e);
+    }
+  }
+
+  async deleteCartPosition(req: IRequest, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const {itemId} = req.params;
+      const {_id} = req.user as IUser;
+
+      const cartItem = await cartService.getCartItem(itemId);
+
+      if (!cartItem || _id.toString() !== cartItem.userId.toString()) {
+        throw new ErrorHandler(
+          ResponseStatusCodeEnum.BAD_REQUEST,
+          customErrors.BAD_REQUEST_GAME_IS_NOT_PRESENT_IN_CART.message,
+          customErrors.BAD_REQUEST_GAME_IS_NOT_PRESENT_IN_CART.code
+        );
+      }
+
+      await cartService.deleteCartPosition(itemId);
+
+      res.end();
+
+    } catch (e) {
+      next(e);
+    }
+  }
+
+  async clearCart(req: IRequest, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const {cartId} = req.params;
+      const {_id} = req.user as IUser;
+
+      const cart = await cartService.getCartById(cartId);
+
+      if (!cart || _id.toString() !== cart.userId.toString()) {
+        throw new ErrorHandler(
+          ResponseStatusCodeEnum.BAD_REQUEST,
+          customErrors.BAD_REQUEST_GAME_IS_NOT_PRESENT_IN_CART.message,
+          customErrors.BAD_REQUEST_GAME_IS_NOT_PRESENT_IN_CART.code
+        );
+      }
+
+      await cartService.deleteCart(cartId);
+
+      res.end();
+
+    } catch (e) {
+      next(e);
+    }
+  }
+
 }
 
 export const cartController = new CartController();

@@ -5,36 +5,38 @@ import {DbTableNameEnum, OrderStatusEnum} from '../../constant';
 type OrderType = IOrder & Document
 
 const OrderSchema: Schema = new Schema<IOrder>({
-  games: [{
-    email: {
-      type: String,
-      required: false
-    },
-    phone: {
-      type: String,
-      required: false
-    },
-    name: {
-      type: String,
-      required: false
-    },
-    gameId: {
-      type: Schema.Types.ObjectId,
-      ref: DbTableNameEnum.GAME,
-      required: false
-    },
-    loan_time: {
-      type: Number,
-      required: false,
-      default: 1
-    },
-    version: {
-      type: String,
-      required: false
+  email: {
+    type: String,
+    required: false
+  },
+  phone: {
+    type: String,
+    required: false
+  },
+  name: {
+    type: String,
+    required: false
+  },
+  games: [
+    {
+      gameId: {
+        type: Schema.Types.ObjectId,
+        ref: DbTableNameEnum.GAME,
+        required: false
+      },
+      loan_time: {
+        type: Number,
+        required: false,
+        default: 1
+      }
     }
-  }],
+  ],
+  total_sum: {
+    type: Number,
+    required: true
+  },
   status: {
-    type: OrderStatusEnum,
+    type: String,
     required: true,
     default: OrderStatusEnum.PENDING
   },

@@ -1,9 +1,7 @@
-import {GameVersionEnum} from '../constant/game';
-
 export interface IGameCart {
+    _id?: string,
     gameId?: string,
-    loan_time?: number,
-    type?: GameVersionEnum
+    loan_time?: number
 }
 
 export interface ICart {
