@@ -6,8 +6,8 @@ class CartService {
     return new CartModel(cartObj).save();
   }
 
-  getCartByParams(userId: string): Promise<ICart | null> {
-    return CartModel.findOne({userId}).populate({
+  getCartByParams(params: Partial<ICart>): Promise<ICart | null> {
+    return CartModel.findOne(params).populate({
       path: 'games.gameId',
       select: 'title version price -_id'
     }).exec();
@@ -17,8 +17,8 @@ class CartService {
     return CartModel.findById(_id).exec();
   }
 
-  addProduct(userId: string, params: any): Promise<ICart | null> {
-    return CartModel.update({userId}, {$push: {games: params}}).exec();
+  addProduct(condition: Partial<ICart>, params: any): Promise<ICart | null> {
+    return CartModel.update(condition, {$push: {games: params}}).exec();
   }
 
   deleteCartPosition(_id: string): Promise<IGameCart> {
@@ -28,12 +28,15 @@ class CartService {
     ).exec();
   }
 
-  gameFromCart(gameId: string): Promise<ICart | null> {
-    return CartModel.findOne({'games.gameId': gameId}, 'games.$').exec();
+  gameFromCart(gameId: string, _id: string): Promise<ICart | null> {
+    return CartModel.findOne({'games.gameId': gameId, _id}, 'games.$').exec();
   }
 
-  getCartItem(_id: string): Promise<ICart | null> {
-    return CartModel.findOne({'games._id': _id}, 'userId games.$').exec();
+  getAuthorizedCartItem(_id: string, userId: string): Promise<ICart | null> {
+    return CartModel.findOne({'games._id': _id, userId}, 'userId games.$').exec();
+  }
+  getUnauthorizedCartItem(_id: string, tempId: string): Promise<ICart | null> {
+    return CartModel.findOne({'games._id': _id, tempId}, 'tempId games.$').exec();
   }
 
   editCartItemLoanTime(_id: string, loan_time: number): Promise<ICart | null> {

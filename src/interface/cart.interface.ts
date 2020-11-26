@@ -7,6 +7,7 @@ export interface IGameCart {
 export interface ICart {
     _id: string;
     games: IGameCart[];
+    tempId?: string,
     userId: string;
     updatedAt: string,
     createdAt: string;

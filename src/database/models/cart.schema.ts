@@ -17,10 +17,14 @@ const CartSchema: Schema = new Schema<ICart>({
       default: 1
     }
   }],
+  tempId: {
+    type: String,
+    required: false
+  },
   userId: {
     type: Schema.Types.ObjectId,
     ref: DbTableNameEnum.USER,
-    required: true
+    required: false
   }
 }, {
   timestamps: true
