@@ -68,6 +68,10 @@ export const customErrors = {
     message: 'Game is not present in cart',
     code: 40017
   },
+  BAD_REQUEST_ORDER_IS_NOT_EXISTS: {
+    message: 'Order is not exists',
+    code: 40018
+  },
 
   //401
   UNAUTHORIZED_TOKEN_NOT_PRESENT: {

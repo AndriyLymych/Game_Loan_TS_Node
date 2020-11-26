@@ -19,4 +19,5 @@ export enum HistoryEvent {
     addGameComment = 'add game comment',
     editGameComment = 'edit game comment',
     createOrder = 'create order',
+    acceptOrder = 'accept order',
 }

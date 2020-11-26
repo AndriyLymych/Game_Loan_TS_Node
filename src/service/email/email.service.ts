@@ -2,7 +2,7 @@ import {createTransport} from 'nodemailer';
 import * as path from 'path';
 
 import * as EmailTemplates from 'email-templates';
-import {ResponseStatusCodeEnum, TokenActionEnum} from '../../constant';
+import {EmailActions, ResponseStatusCodeEnum, TokenActionEnum} from '../../constant';
 import {config} from '../../config';
 import {htmlTemplates} from '../../email-templates';
 import {ErrorHandler} from '../../errors';
@@ -36,7 +36,7 @@ const emailTemplates = new EmailTemplates({
 });
 
 export class MailService {
-  async sendEmail(email: string, action: TokenActionEnum, context: any = {}): Promise<void> {
+  async sendEmail(email: string, action: TokenActionEnum | EmailActions, context: any = {}): Promise<void> {
     const templateInfo = htmlTemplates[action];
 
     if (!templateInfo) {
@@ -48,7 +48,7 @@ export class MailService {
     const html = await emailTemplates.render(templateInfo.templateFileName, context);
 
     await transporter.sendMail({
-      from: `NOREPLY <${config.ROOT_EMAIL}>`,
+      from: `GAME LOAN 🎮 <${config.ROOT_EMAIL}>`,
       to: email,
       subject: templateInfo.subject,
       html
