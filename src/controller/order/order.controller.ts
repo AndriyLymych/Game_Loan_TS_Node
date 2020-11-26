@@ -132,6 +132,7 @@ class OrderController {
                         password: credentials?.password
                     }
                 });
+
                 await gameService.editGameById(gameId?.id as string, {status: GameStatusEnum.IN_LOAN});
             }
 
