@@ -17,5 +17,6 @@ router.post('/authorized/:cartId', orderMiddleware.validateAuthorizedOrderData, 
 router.use(adminMiddleware.isAdminChecker,orderMiddleware.isOrderExists);
 
 router.put('/accept', orderController.acceptOrder);
+router.put('/reject', orderController.rejectOrder);
 
 export const orderRouter = router;

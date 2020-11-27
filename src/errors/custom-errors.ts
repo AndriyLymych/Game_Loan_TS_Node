@@ -72,6 +72,17 @@ export const customErrors = {
     message: 'Order is not exists',
     code: 40018
   },
+  BAD_REQUEST_ORDER_IS_ALREADY_ADMITTED: {
+    message: 'Order is already admitted',
+    code: 40019
+  }, BAD_REQUEST_ORDER_IS_ALREADY_REJECTED: {
+    message: 'Order is already rejected',
+    code: 40020
+
+  }, BAD_REQUEST_ORDER_IS_ALREADY_FINISHED: {
+    message: 'Order is already finished',
+    code: 40021
+  },
 
   //401
   UNAUTHORIZED_TOKEN_NOT_PRESENT: {

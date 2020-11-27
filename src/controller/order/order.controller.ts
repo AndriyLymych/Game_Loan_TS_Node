@@ -120,6 +120,14 @@ class OrderController {
             const order = req.order as any;
             const {_id: userId} = req.user as IUser;
 
+            if (order.status === OrderStatusEnum.ADMITTED) {
+                throw new ErrorHandler(
+                    ResponseStatusCodeEnum.BAD_REQUEST,
+                    customErrors.BAD_REQUEST_ORDER_IS_ALREADY_ADMITTED.message,
+                    customErrors.BAD_REQUEST_ORDER_IS_ALREADY_ADMITTED.code
+                );
+            }
+
             for (const {gameId} of order.games) {
 
                 const credentials = await gameCredentialService.getCredentialByParams({gameId: gameId?._id as string});
@@ -143,6 +151,34 @@ class OrderController {
                 EmailActions.SEND_CREDENTIALS,
                 {credentials: credentialData}
             );
+
+            res.end();
+
+        } catch (e) {
+            next(e);
+        }
+    }
+
+    async rejectOrder(req: IRequest, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const {_id: orderId, status, games} = req.order as any;
+            const {_id: userId} = req.user as IUser;
+
+            if (status === OrderStatusEnum.REJECTED) {
+                throw new ErrorHandler(
+                    ResponseStatusCodeEnum.BAD_REQUEST,
+                    customErrors.BAD_REQUEST_ORDER_IS_ALREADY_REJECTED.message,
+                    customErrors.BAD_REQUEST_ORDER_IS_ALREADY_REJECTED.code
+                );
+            }
+
+            await orderService.editOrderById(orderId, {status: OrderStatusEnum.REJECTED});
+
+            for (const game of games) {
+                await gameService.editGameById(game.gameId._id, {status: GameStatusEnum.AVAILABLE});
+            }
+
+            await historyService.addEvent({event: `${HistoryEvent.rejectOrder} with id ${orderId}`, userId});
 
             res.end();
 
