@@ -12,9 +12,20 @@ router.post(
 );
 
 router.use(tokenMiddleware.checkTokenPresent, tokenMiddleware.verifyAndGetUserFromAuthToken(TokenActionEnum.AUTH_USER_ACCESS));
-router.post('/authorized/:cartId', orderMiddleware.validateAuthorizedOrderData, orderController.createAuthorizedOrderRequest);
 
-router.use(adminMiddleware.isAdminChecker,orderMiddleware.isOrderExists);
+router.get('/customer', orderController.getAllOrdersByStatusForCustomer);
+router.post(
+  '/authorized/:cartId',
+  orderMiddleware.validateAuthorizedOrderData,
+  orderController.createAuthorizedOrderRequest
+);
+
+router.use(adminMiddleware.isAdminChecker);
+
+router.get('/', orderController.getAllOrdersByStatus);
+router.delete('/:itemId',orderController.deleteOrderItem);
+
+router.use(orderMiddleware.isOrderExists);
 
 router.put('/accept', orderController.acceptOrder);
 router.put('/reject', orderController.rejectOrder);

@@ -1,3 +1,4 @@
 //TODO add Photo to game,user,updateUser
 //TODO confirm user method
 //TODO cron jobs for clear history and auth tokens
+//TODO set app.use() in all routers

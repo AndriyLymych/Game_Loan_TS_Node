@@ -75,13 +75,23 @@ export const customErrors = {
   BAD_REQUEST_ORDER_IS_ALREADY_ADMITTED: {
     message: 'Order is already admitted',
     code: 40019
-  }, BAD_REQUEST_ORDER_IS_ALREADY_REJECTED: {
+  },
+  BAD_REQUEST_ORDER_IS_ALREADY_REJECTED: {
     message: 'Order is already rejected',
     code: 40020
 
-  }, BAD_REQUEST_ORDER_IS_ALREADY_FINISHED: {
+  },
+  BAD_REQUEST_ORDER_IS_ALREADY_FINISHED: {
     message: 'Order is already finished',
     code: 40021
+  },
+  BAD_REQUEST_NO_ANY_ORDERS: {
+    message: 'No any orders',
+    code: 40022
+  },
+  BAD_REQUEST_NO_SUCH_GAME_IN_ORDER: {
+    message: 'No such game in order',
+    code: 40023
   },
 
   //401

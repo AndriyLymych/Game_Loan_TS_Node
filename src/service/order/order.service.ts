@@ -19,6 +19,18 @@ class OrderService {
   editOrderById(_id: string, params: Partial<IOrder>): Promise<IOrder | null> {
     return OrderModel.findByIdAndUpdate(_id, params).exec();
   }
+
+  findAllOrdersByStatus(params: Partial<IOrder>, limit: number, offset: number): Promise<IOrder[]> {
+    return OrderModel.find(params).limit(limit).skip(offset).exec();
+  }
+
+  deleteOrderGameItem(_id: string): Promise<IOrder> {
+    return OrderModel.updateOne({'games._id': _id}, {$pull: {games: {_id}}}).exec();
+  }
+
+  getOrderByGameItemId(_id: string): Promise<IOrder | null> {
+    return OrderModel.findOne({'games._id': _id}, 'games.$').exec();
+  }
 }
 
 export const orderService = new OrderService();

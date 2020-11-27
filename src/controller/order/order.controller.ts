@@ -187,6 +187,95 @@ class OrderController {
         }
     }
 
+    async getAllOrdersByStatus(req: IRequest, res: Response, next: NextFunction): Promise<void> {
+        try {
+
+            const {status = OrderStatusEnum.PENDING, limit} = req.query;
+            let {page = 1} = req.query;
+
+            if (+page === 0) {
+                page = 1;
+            }
+            page = +page - 1;
+
+            const orders = await orderService.findAllOrdersByStatus(
+                {status: status as string},
+                Number(limit),
+                Number(limit) * page
+                )
+            ;
+
+            if (!orders.length) {
+                throw new ErrorHandler(
+                    ResponseStatusCodeEnum.BAD_REQUEST,
+                    customErrors.BAD_REQUEST_NO_ANY_ORDERS.message,
+                    customErrors.BAD_REQUEST_NO_ANY_ORDERS.code
+                );
+            }
+
+            res.json(orders);
+
+        } catch (e) {
+            next(e);
+        }
+    }
+
+    async getAllOrdersByStatusForCustomer(req: IRequest, res: Response, next: NextFunction): Promise<void> {
+        try {
+
+            const {status = OrderStatusEnum.ADMITTED, limit} = req.query;
+            const {_id: userId} = req.user as IUser;
+            let {page = 1} = req.query;
+
+            if (+page === 0) {
+                page = 1;
+            }
+            page = +page - 1;
+
+            const orders = await orderService.findAllOrdersByStatus(
+                {status: status as string, userId},
+                Number(limit),
+                Number(limit) * page
+            );
+
+            if (!orders.length) {
+                throw new ErrorHandler(
+                    ResponseStatusCodeEnum.BAD_REQUEST,
+                    customErrors.BAD_REQUEST_NO_ANY_ORDERS.message,
+                    customErrors.BAD_REQUEST_NO_ANY_ORDERS.code
+                );
+            }
+
+            res.json(orders);
+
+        } catch (e) {
+            next(e);
+        }
+    }
+
+    async deleteOrderItem(req: IRequest, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const {itemId} = req.params;
+            const orderGameItem = await orderService.getOrderByGameItemId(itemId);
+
+            if (!orderGameItem) {
+                throw new ErrorHandler(
+                    ResponseStatusCodeEnum.BAD_REQUEST,
+                    customErrors.BAD_REQUEST_NO_SUCH_GAME_IN_ORDER.message,
+                    customErrors.BAD_REQUEST_NO_SUCH_GAME_IN_ORDER.code
+                );
+            }
+
+            await gameService.editGameById(orderGameItem.games[0].gameId as string, {status: GameStatusEnum.AVAILABLE});
+            await orderService.deleteOrderGameItem(itemId);
+
+            res.end();
+
+        } catch (e) {
+            next(e);
+        }
+    }
+
 }
 
 export const orderController = new OrderController();
