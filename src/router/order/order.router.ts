@@ -1,5 +1,5 @@
 import {Router} from 'express';
-import {adminMiddleware, orderMiddleware, tokenMiddleware} from '../../middleware';
+import {adminMiddleware, cartMiddleware, orderMiddleware, tokenMiddleware} from '../../middleware';
 import {TokenActionEnum} from '../../constant';
 import {orderController} from '../../controller';
 
@@ -23,10 +23,11 @@ router.post(
 router.use(adminMiddleware.isAdminChecker);
 
 router.get('/', orderController.getAllOrdersByStatus);
-router.delete('/:itemId',orderController.deleteOrderItem);
+router.delete('/:itemId', orderController.deleteOrderItem);
 
 router.use(orderMiddleware.isOrderExists);
 
+router.post('/game', cartMiddleware.validateCartData, orderController.addGameItemToOrder);
 router.put('/accept', orderController.acceptOrder);
 router.put('/reject', orderController.rejectOrder);
 

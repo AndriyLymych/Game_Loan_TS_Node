@@ -28,8 +28,12 @@ class OrderService {
     return OrderModel.updateOne({'games._id': _id}, {$pull: {games: {_id}}}).exec();
   }
 
+  addOrderGameItem(_id: string, params: any): Promise<IOrder> {
+    return OrderModel.updateOne({_id}, {$push: {games: params}}).exec();
+  }
+
   getOrderByGameItemId(_id: string): Promise<IOrder | null> {
-    return OrderModel.findOne({'games._id': _id}, 'games.$').exec();
+    return OrderModel.findOne({'games._id': _id}, 'status games.$').exec();
   }
 }
 

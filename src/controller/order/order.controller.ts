@@ -1,5 +1,5 @@
 import {NextFunction, Response} from 'express';
-import {IRequest, IUser} from 'src/interface';
+import {IOrder, IRequest, IUser} from 'src/interface';
 import {cartService} from '../../service/cart';
 import {customErrors, ErrorHandler} from '../../errors';
 import {ResponseStatusCodeEnum} from '../../constant/db';
@@ -12,6 +12,7 @@ import {gameCredentialService} from '../../service/game-credential';
 import {OrderStatusEnum} from '../../constant/order';
 import {emailService} from '../../service/email';
 import {EmailActions} from '../../constant/common';
+import {calculateCartHelper} from '../../helper';
 
 class OrderController {
     async createAuthorizedOrderRequest(req: IRequest, res: Response, next: NextFunction): Promise<void> {
@@ -21,9 +22,10 @@ class OrderController {
 
             const {cartId} = req.params;
             const {_id: userId} = req.user as IUser;
-            const {total_sum} = req.body;
 
             const cartExists = await cartService.getCartById(cartId);
+
+            const total_sum = calculateCartHelper(cartExists);
 
             if (!cartExists || userId.toString() !== cartExists.userId.toString()) {
                 throw new ErrorHandler(
@@ -54,7 +56,6 @@ class OrderController {
                 }
 
                 await historyService.addEvent({event: HistoryEvent.createOrder, userId});
-
                 await cartService.deleteCart(cartExists._id);
 
                 res.end();
@@ -72,9 +73,11 @@ class OrderController {
 
             const {cartId} = req.params;
             const {tempId} = req.query;
-            const {total_sum, email, phone, name} = req.body;
+            const {email, phone, name} = req.body;
 
             const cartExists = await cartService.getCartById(cartId);
+
+            const total_sum = calculateCartHelper(cartExists);
 
             if (!cartExists || tempId?.toString() !== cartExists.tempId?.toString()) {
                 throw new ErrorHandler(
@@ -256,7 +259,16 @@ class OrderController {
     async deleteOrderItem(req: IRequest, res: Response, next: NextFunction): Promise<void> {
         try {
             const {itemId} = req.params;
+
             const orderGameItem = await orderService.getOrderByGameItemId(itemId);
+
+            if (orderGameItem?.status !== OrderStatusEnum.PENDING) {
+                throw new ErrorHandler(
+                    ResponseStatusCodeEnum.BAD_REQUEST,
+                    customErrors.BAD_REQUEST_ORDER_IS_NOT_EXISTS.message,
+                    customErrors.BAD_REQUEST_ORDER_IS_NOT_EXISTS.code
+                );
+            }
 
             if (!orderGameItem) {
                 throw new ErrorHandler(
@@ -267,7 +279,35 @@ class OrderController {
             }
 
             await gameService.editGameById(orderGameItem.games[0].gameId as string, {status: GameStatusEnum.AVAILABLE});
-            await orderService.deleteOrderGameItem(itemId);
+            const sas = await orderService.deleteOrderGameItem(itemId);
+            console.log(sas);
+//TODO
+            res.end();
+
+        } catch (e) {
+            next(e);
+        }
+    }
+
+    async addGameItemToOrder(req: IRequest, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const {gameId} = req.query;
+            const {_id: orderId, total_sum} = req.order as IOrder;
+            const {loan_time} = req.body;
+
+            const game = await gameService.getGameById(gameId as string);
+
+            if (!game || game.status !== GameStatusEnum.AVAILABLE) {
+                throw new ErrorHandler(
+                    ResponseStatusCodeEnum.BAD_REQUEST,
+                    customErrors.BAD_REQUEST_GAME_IS_NOT_AVAILABLE_NOW.message,
+                    customErrors.BAD_REQUEST_GAME_IS_NOT_AVAILABLE_NOW.code
+                );
+            }
+
+            await orderService.addOrderGameItem(orderId, {loan_time, gameId});
+            await gameService.editGameById(game._id, {status: GameStatusEnum.IN_LOAN});
+            await orderService.editOrderById(orderId, {total_sum: total_sum + game.price * loan_time});
 
             res.end();
 
