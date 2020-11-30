@@ -9,7 +9,7 @@ class CartService {
   getCartByParams(params: Partial<ICart>): Promise<ICart | null> {
     return CartModel.findOne(params).populate({
       path: 'games.gameId',
-      select: 'title version price -_id'
+      select: 'title version price'
     }).exec();
   }
 

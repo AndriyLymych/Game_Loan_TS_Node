@@ -6,7 +6,7 @@ export interface IOrder {
     phone?: string,
     name?: string,
     games: IGameCart[];
-    total_sum: number
+    total_sum?: number
     status: string,
     userId?: string;
     updatedAt: string,

@@ -1,5 +1,5 @@
 import {NextFunction, Response} from 'express';
-import {IOrder, IRequest, IUser} from 'src/interface';
+import {IGame, IOrder, IRequest, IUser} from 'src/interface';
 import {cartService} from '../../service/cart';
 import {customErrors, ErrorHandler} from '../../errors';
 import {ResponseStatusCodeEnum} from '../../constant/db';
@@ -15,306 +15,319 @@ import {EmailActions} from '../../constant/common';
 import {calculateCartHelper} from '../../helper';
 
 class OrderController {
-    async createAuthorizedOrderRequest(req: IRequest, res: Response, next: NextFunction): Promise<void> {
-        try {
+  async createAuthorizedOrderRequest(req: IRequest, res: Response, next: NextFunction): Promise<void> {
+    try {
 
-            const gamesAlreadyInLoan: any[] = [];
+      const gamesAlreadyInLoan: any[] = [];
 
-            const {cartId} = req.params;
-            const {_id: userId} = req.user as IUser;
+      const {cartId} = req.params;
+      const {_id: userId} = req.user as IUser;
 
-            const cartExists = await cartService.getCartById(cartId);
+      const cartExists = await cartService.getCartByParams({_id:cartId});
 
-            const total_sum = calculateCartHelper(cartExists);
+      const total_sum = calculateCartHelper(cartExists);
 
-            if (!cartExists || userId.toString() !== cartExists.userId.toString()) {
-                throw new ErrorHandler(
-                    ResponseStatusCodeEnum.BAD_REQUEST,
-                    customErrors.BAD_REQUEST_CART_IS_NOT_EXISTS.message,
-                    customErrors.BAD_REQUEST_CART_IS_NOT_EXISTS.code
-                );
-            }
+      if (!cartExists || userId.toString() !== cartExists.userId.toString()) {
+        throw new ErrorHandler(
+          ResponseStatusCodeEnum.BAD_REQUEST,
+          customErrors.BAD_REQUEST_CART_IS_NOT_EXISTS.message,
+          customErrors.BAD_REQUEST_CART_IS_NOT_EXISTS.code
+        );
+      }
 
-            for (const {gameId} of cartExists.games) {
+      for (const {gameId} of cartExists.games) {
 
-                const game = await gameService.getGameById(gameId as string);
-                if (game?.status !== GameStatusEnum.AVAILABLE) {
-                    gamesAlreadyInLoan.push(game);
+        const game = await gameService.getGameById(gameId as string);
+        if (game?.status !== GameStatusEnum.AVAILABLE) {
+          gamesAlreadyInLoan.push(game);
 
-                }
-            }
-
-            if (gamesAlreadyInLoan.length) {
-                res.json(gamesAlreadyInLoan);
-            }
-
-            if (!gamesAlreadyInLoan.length) {
-                await orderService.createOrderRequest({userId, games: cartExists.games, total_sum});
-
-                for (const {gameId} of cartExists.games) {
-                    await gameService.editGameById(gameId as string, {status: GameStatusEnum.CONSIDER});
-                }
-
-                await historyService.addEvent({event: HistoryEvent.createOrder, userId});
-                await cartService.deleteCart(cartExists._id);
-
-                res.end();
-            }
-
-        } catch (e) {
-            next(e);
         }
-    }
+      }
 
-    async createUnauthorizedOrderRequest(req: IRequest, res: Response, next: NextFunction): Promise<void> {
-        try {
+      if (gamesAlreadyInLoan.length) {
+        res.json(gamesAlreadyInLoan);
+      }
 
-            const gamesAlreadyInLoan: any[] = [];
+      if (!gamesAlreadyInLoan.length) {
+        await orderService.createOrderRequest({userId, games: cartExists.games, total_sum});
 
-            const {cartId} = req.params;
-            const {tempId} = req.query;
-            const {email, phone, name} = req.body;
-
-            const cartExists = await cartService.getCartById(cartId);
-
-            const total_sum = calculateCartHelper(cartExists);
-
-            if (!cartExists || tempId?.toString() !== cartExists.tempId?.toString()) {
-                throw new ErrorHandler(
-                    ResponseStatusCodeEnum.BAD_REQUEST,
-                    customErrors.BAD_REQUEST_CART_IS_NOT_EXISTS.message,
-                    customErrors.BAD_REQUEST_CART_IS_NOT_EXISTS.code
-                );
-            }
-
-            for (const {gameId} of cartExists.games) {
-
-                const game = await gameService.getGameById(gameId as string);
-                if (game?.status !== GameStatusEnum.AVAILABLE) {
-                    gamesAlreadyInLoan.push(game);
-
-                }
-            }
-
-            if (gamesAlreadyInLoan.length) {
-                res.json(gamesAlreadyInLoan);
-            }
-
-            if (!gamesAlreadyInLoan.length) {
-                await orderService.createOrderRequest({phone, email, name, games: cartExists.games, total_sum});
-
-                for (const {gameId} of cartExists.games) {
-                    await gameService.editGameById(gameId as string, {status: GameStatusEnum.CONSIDER});
-                }
-
-                await cartService.deleteCart(cartExists._id);
-
-                res.end();
-            }
-
-        } catch (e) {
-            next(e);
+        for (const {gameId} of cartExists.games) {
+          await gameService.editGameById(gameId as string, {status: GameStatusEnum.CONSIDER});
         }
+
+        await historyService.addEvent({event: HistoryEvent.createOrder, userId});
+        await cartService.deleteCart(cartExists._id);
+
+        res.end();
+      }
+
+    } catch (e) {
+      next(e);
     }
+  }
 
-    async acceptOrder(req: IRequest, res: Response, next: NextFunction): Promise<void> {
-        try {
-            const credentialData: any[] = [];
-            const order = req.order as any;
-            const {_id: userId} = req.user as IUser;
+  async createUnauthorizedOrderRequest(req: IRequest, res: Response, next: NextFunction): Promise<void> {
+    try {
 
-            if (order.status === OrderStatusEnum.ADMITTED) {
-                throw new ErrorHandler(
-                    ResponseStatusCodeEnum.BAD_REQUEST,
-                    customErrors.BAD_REQUEST_ORDER_IS_ALREADY_ADMITTED.message,
-                    customErrors.BAD_REQUEST_ORDER_IS_ALREADY_ADMITTED.code
-                );
-            }
+      const gamesAlreadyInLoan: any[] = [];
 
-            for (const {gameId} of order.games) {
+      const {cartId} = req.params;
+      const {tempId} = req.query;
+      const {email, phone, name} = req.body;
 
-                const credentials = await gameCredentialService.getCredentialByParams({gameId: gameId?._id as string});
+      const cartExists = await cartService.getCartByParams({_id:cartId});
 
-                credentialData.push({
-                    game: gameId.title,
-                    version: gameId.version,
-                    credentials: {
-                        login: credentials?.login,
-                        password: credentials?.password
-                    }
-                });
+      const total_sum = calculateCartHelper(cartExists);
 
-                await gameService.editGameById(gameId?.id as string, {status: GameStatusEnum.IN_LOAN});
-            }
 
-            await orderService.editOrderById(order._id, {status: OrderStatusEnum.ADMITTED});
-            await historyService.addEvent({event: `${HistoryEvent.acceptOrder} with id ${order._id}`, userId});
-            await emailService.sendEmail(
-                order.email || order.userId.email,
-                EmailActions.SEND_CREDENTIALS,
-                {credentials: credentialData}
-            );
+      if (!cartExists || tempId?.toString() !== cartExists.tempId?.toString()) {
+        throw new ErrorHandler(
+          ResponseStatusCodeEnum.BAD_REQUEST,
+          customErrors.BAD_REQUEST_CART_IS_NOT_EXISTS.message,
+          customErrors.BAD_REQUEST_CART_IS_NOT_EXISTS.code
+        );
+      }
 
-            res.end();
+      for (const {gameId} of cartExists.games) {
 
-        } catch (e) {
-            next(e);
+        const game = await gameService.getGameById(gameId as string);
+
+        if (game?.status !== GameStatusEnum.AVAILABLE) {
+          gamesAlreadyInLoan.push(game);
+
         }
+      }
+
+      if (gamesAlreadyInLoan.length) {
+        res.json(gamesAlreadyInLoan);
+      }
+
+      if (!gamesAlreadyInLoan.length) {
+        await orderService.createOrderRequest({
+          phone,
+          email,
+          name,
+          games: cartExists.games,
+          total_sum
+        });
+
+        // for (const {gameId} of cartExists.games) {
+        //   await gameService.editGameById(gameId as string, {status: GameStatusEnum.CONSIDER});
+        // }
+        //
+        // await cartService.deleteCart(cartExists._id);
+
+        res.end();
+      }
+
+    } catch (e) {
+      next(e);
     }
+  }
 
-    async rejectOrder(req: IRequest, res: Response, next: NextFunction): Promise<void> {
-        try {
-            const {_id: orderId, status, games} = req.order as any;
-            const {_id: userId} = req.user as IUser;
+  async acceptOrder(req: IRequest, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const credentialData: any[] = [];
+      const order = req.order as any;
+      const {_id: userId} = req.user as IUser;
 
-            if (status === OrderStatusEnum.REJECTED) {
-                throw new ErrorHandler(
-                    ResponseStatusCodeEnum.BAD_REQUEST,
-                    customErrors.BAD_REQUEST_ORDER_IS_ALREADY_REJECTED.message,
-                    customErrors.BAD_REQUEST_ORDER_IS_ALREADY_REJECTED.code
-                );
-            }
+      if (order.status === OrderStatusEnum.ADMITTED) {
+        throw new ErrorHandler(
+          ResponseStatusCodeEnum.BAD_REQUEST,
+          customErrors.BAD_REQUEST_ORDER_IS_ALREADY_ADMITTED.message,
+          customErrors.BAD_REQUEST_ORDER_IS_ALREADY_ADMITTED.code
+        );
+      }
 
-            await orderService.editOrderById(orderId, {status: OrderStatusEnum.REJECTED});
+      for (const {gameId} of order.games) {
 
-            for (const game of games) {
-                await gameService.editGameById(game.gameId._id, {status: GameStatusEnum.AVAILABLE});
-            }
+        const credentials = await gameCredentialService.getCredentialByParams({gameId: gameId?._id as string});
 
-            await historyService.addEvent({event: `${HistoryEvent.rejectOrder} with id ${orderId}`, userId});
+        credentialData.push({
+          game: gameId.title,
+          version: gameId.version,
+          credentials: {
+            login: credentials?.login,
+            password: credentials?.password
+          }
+        });
 
-            res.end();
+        await gameService.editGameById(gameId?.id as string, {status: GameStatusEnum.IN_LOAN});
+      }
 
-        } catch (e) {
-            next(e);
-        }
+      await orderService.editOrderById(order._id, {status: OrderStatusEnum.ADMITTED});
+      await historyService.addEvent({event: `${HistoryEvent.acceptOrder} with id ${order._id}`, userId});
+      await emailService.sendEmail(
+        order.email || order.userId.email,
+        EmailActions.SEND_CREDENTIALS,
+        {credentials: credentialData}
+      );
+
+      res.end();
+
+    } catch (e) {
+      next(e);
     }
+  }
 
-    async getAllOrdersByStatus(req: IRequest, res: Response, next: NextFunction): Promise<void> {
-        try {
+  async rejectOrder(req: IRequest, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const {_id: orderId, status, games} = req.order as any;
+      const {_id: userId} = req.user as IUser;
 
-            const {status = OrderStatusEnum.PENDING, limit} = req.query;
-            let {page = 1} = req.query;
+      if (status === OrderStatusEnum.REJECTED) {
+        throw new ErrorHandler(
+          ResponseStatusCodeEnum.BAD_REQUEST,
+          customErrors.BAD_REQUEST_ORDER_IS_ALREADY_REJECTED.message,
+          customErrors.BAD_REQUEST_ORDER_IS_ALREADY_REJECTED.code
+        );
+      }
 
-            if (+page === 0) {
-                page = 1;
-            }
-            page = +page - 1;
+      await orderService.editOrderById(orderId, {status: OrderStatusEnum.REJECTED});
 
-            const orders = await orderService.findAllOrdersByStatus(
-                {status: status as string},
-                Number(limit),
-                Number(limit) * page
-                )
+      for (const game of games) {
+        await gameService.editGameById(game.gameId._id, {status: GameStatusEnum.AVAILABLE});
+      }
+
+      await historyService.addEvent({event: `${HistoryEvent.rejectOrder} with id ${orderId}`, userId});
+
+      res.end();
+
+    } catch (e) {
+      next(e);
+    }
+  }
+
+  async getAllOrdersByStatus(req: IRequest, res: Response, next: NextFunction): Promise<void> {
+    try {
+
+      const {status = OrderStatusEnum.PENDING, limit} = req.query;
+      let {page = 1} = req.query;
+
+      if (+page === 0) {
+        page = 1;
+      }
+      page = +page - 1;
+
+      const orders = await orderService.findAllOrdersByStatus(
+        {status: status as string},
+        Number(limit),
+        Number(limit) * page
+      )
             ;
 
-            if (!orders.length) {
-                throw new ErrorHandler(
-                    ResponseStatusCodeEnum.BAD_REQUEST,
-                    customErrors.BAD_REQUEST_NO_ANY_ORDERS.message,
-                    customErrors.BAD_REQUEST_NO_ANY_ORDERS.code
-                );
-            }
+      if (!orders.length) {
+        throw new ErrorHandler(
+          ResponseStatusCodeEnum.BAD_REQUEST,
+          customErrors.BAD_REQUEST_NO_ANY_ORDERS.message,
+          customErrors.BAD_REQUEST_NO_ANY_ORDERS.code
+        );
+      }
 
-            res.json(orders);
+      res.json(orders);
 
-        } catch (e) {
-            next(e);
-        }
+    } catch (e) {
+      next(e);
     }
+  }
 
-    async getAllOrdersByStatusForCustomer(req: IRequest, res: Response, next: NextFunction): Promise<void> {
-        try {
+  async getAllOrdersByStatusForCustomer(req: IRequest, res: Response, next: NextFunction): Promise<void> {
+    try {
 
-            const {status = OrderStatusEnum.ADMITTED, limit} = req.query;
-            const {_id: userId} = req.user as IUser;
-            let {page = 1} = req.query;
+      const {status = OrderStatusEnum.ADMITTED, limit} = req.query;
+      const {_id: userId} = req.user as IUser;
+      let {page = 1} = req.query;
 
-            if (+page === 0) {
-                page = 1;
-            }
-            page = +page - 1;
+      if (+page === 0) {
+        page = 1;
+      }
+      page = +page - 1;
 
-            const orders = await orderService.findAllOrdersByStatus(
-                {status: status as string, userId},
-                Number(limit),
-                Number(limit) * page
-            );
+      const orders = await orderService.findAllOrdersByStatus(
+        {status: status as string, userId},
+        Number(limit),
+        Number(limit) * page
+      );
 
-            if (!orders.length) {
-                throw new ErrorHandler(
-                    ResponseStatusCodeEnum.BAD_REQUEST,
-                    customErrors.BAD_REQUEST_NO_ANY_ORDERS.message,
-                    customErrors.BAD_REQUEST_NO_ANY_ORDERS.code
-                );
-            }
+      if (!orders.length) {
+        throw new ErrorHandler(
+          ResponseStatusCodeEnum.BAD_REQUEST,
+          customErrors.BAD_REQUEST_NO_ANY_ORDERS.message,
+          customErrors.BAD_REQUEST_NO_ANY_ORDERS.code
+        );
+      }
 
-            res.json(orders);
+      res.json(orders);
 
-        } catch (e) {
-            next(e);
-        }
+    } catch (e) {
+      next(e);
     }
+  }
 
-    async deleteOrderItem(req: IRequest, res: Response, next: NextFunction): Promise<void> {
-        try {
-            const {itemId} = req.params;
+  async deleteOrderItem(req: IRequest, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const {itemId} = req.params;
 
-            const orderGameItem = await orderService.getOrderByGameItemId(itemId);
+      const orderGameItem: any = await orderService.getOrderByGameItemId(itemId);
 
-            if (orderGameItem?.status !== OrderStatusEnum.PENDING) {
-                throw new ErrorHandler(
-                    ResponseStatusCodeEnum.BAD_REQUEST,
-                    customErrors.BAD_REQUEST_ORDER_IS_NOT_EXISTS.message,
-                    customErrors.BAD_REQUEST_ORDER_IS_NOT_EXISTS.code
-                );
-            }
+      if (orderGameItem?.status !== OrderStatusEnum.PENDING) {
+        throw new ErrorHandler(
+          ResponseStatusCodeEnum.BAD_REQUEST,
+          customErrors.BAD_REQUEST_ORDER_IS_NOT_EXISTS.message,
+          customErrors.BAD_REQUEST_ORDER_IS_NOT_EXISTS.code
+        );
+      }
 
-            if (!orderGameItem) {
-                throw new ErrorHandler(
-                    ResponseStatusCodeEnum.BAD_REQUEST,
-                    customErrors.BAD_REQUEST_NO_SUCH_GAME_IN_ORDER.message,
-                    customErrors.BAD_REQUEST_NO_SUCH_GAME_IN_ORDER.code
-                );
-            }
+      if (!orderGameItem) {
+        throw new ErrorHandler(
+          ResponseStatusCodeEnum.BAD_REQUEST,
+          customErrors.BAD_REQUEST_NO_SUCH_GAME_IN_ORDER.message,
+          customErrors.BAD_REQUEST_NO_SUCH_GAME_IN_ORDER.code
+        );
+      }
 
-            await gameService.editGameById(orderGameItem.games[0].gameId as string, {status: GameStatusEnum.AVAILABLE});
-            const sas = await orderService.deleteOrderGameItem(itemId);
-            console.log(sas);
-//TODO
-            res.end();
+      await gameService.editGameById(orderGameItem.games[0].gameId as string, {status: GameStatusEnum.AVAILABLE});
+      const {price} = await gameService.getGameById(orderGameItem.games[0].gameId as string) as IGame;
+      await orderService.editOrderById(
+        orderGameItem._id,
+        {total_sum: orderGameItem.total_sum - orderGameItem?.games[0]?.loan_time * price}
+      );
 
-        } catch (e) {
-            next(e);
-        }
+      await orderService.deleteOrderGameItem(itemId);
+
+      res.end();
+
+    } catch (e) {
+      next(e);
     }
+  }
 
-    async addGameItemToOrder(req: IRequest, res: Response, next: NextFunction): Promise<void> {
-        try {
-            const {gameId} = req.query;
-            const {_id: orderId, total_sum} = req.order as IOrder;
-            const {loan_time} = req.body;
+  async addGameItemToOrder(req: IRequest, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const {gameId} = req.query;
+      const {_id: orderId, total_sum} = req.order as IOrder;
+      const {loan_time} = req.body;
 
-            const game = await gameService.getGameById(gameId as string);
+      const game = await gameService.getGameById(gameId as string);
 
-            if (!game || game.status !== GameStatusEnum.AVAILABLE) {
-                throw new ErrorHandler(
-                    ResponseStatusCodeEnum.BAD_REQUEST,
-                    customErrors.BAD_REQUEST_GAME_IS_NOT_AVAILABLE_NOW.message,
-                    customErrors.BAD_REQUEST_GAME_IS_NOT_AVAILABLE_NOW.code
-                );
-            }
+      if (!game || game.status !== GameStatusEnum.AVAILABLE) {
+        throw new ErrorHandler(
+          ResponseStatusCodeEnum.BAD_REQUEST,
+          customErrors.BAD_REQUEST_GAME_IS_NOT_AVAILABLE_NOW.message,
+          customErrors.BAD_REQUEST_GAME_IS_NOT_AVAILABLE_NOW.code
+        );
+      }
 
-            await orderService.addOrderGameItem(orderId, {loan_time, gameId});
-            await gameService.editGameById(game._id, {status: GameStatusEnum.IN_LOAN});
-            await orderService.editOrderById(orderId, {total_sum: total_sum + game.price * loan_time});
+      await orderService.addOrderGameItem(orderId, {loan_time, gameId});
+      await gameService.editGameById(game._id, {status: GameStatusEnum.IN_LOAN});
+      await orderService.editOrderById(orderId, {total_sum: total_sum as number + game.price * loan_time});
 
-            res.end();
+      res.end();
 
-        } catch (e) {
-            next(e);
-        }
+    } catch (e) {
+      next(e);
     }
+  }
 
 }
 

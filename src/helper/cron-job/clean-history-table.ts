@@ -9,7 +9,6 @@ export const cleanHistoryTable = async (): Promise<void> => {
 
   records.forEach(record => {
     const recordData = new Date(record.createdAt).getTime();
-    console.log(currentData - recordData);
 
     if (currentData - recordData >= config.CLEAN_HISTORY_TIME) {
       historyService.deleteRecord(record._id);

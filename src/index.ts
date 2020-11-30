@@ -2,13 +2,13 @@ import * as http from 'http';
 
 import {app} from './app';
 import {config} from './config';
-import {createMajorAdmin,cronJob} from './helper';
+import {createMajorAdmin} from './helper';
 
 const server = http.createServer(app);
 
 server.listen(config.PORT, async () => {
   await createMajorAdmin();
-  await cronJob();
+  // await cronJob();
   console.log(`Listen port ${config.PORT}...`);
 });
 

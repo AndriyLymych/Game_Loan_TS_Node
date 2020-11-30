@@ -33,7 +33,7 @@ const OrderSchema: Schema = new Schema<IOrder>({
   ],
   total_sum: {
     type: Number,
-    required: true
+    required: false
   },
   status: {
     type: String,

@@ -16,7 +16,6 @@ router.use(tokenMiddleware.checkTokenPresent, tokenMiddleware.verifyAndGetUserFr
 router.get('/customer', orderController.getAllOrdersByStatusForCustomer);
 router.post(
   '/authorized/:cartId',
-  orderMiddleware.validateAuthorizedOrderData,
   orderController.createAuthorizedOrderRequest
 );
 
