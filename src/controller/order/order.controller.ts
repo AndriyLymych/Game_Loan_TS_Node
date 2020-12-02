@@ -23,9 +23,7 @@ class OrderController {
       const {cartId} = req.params;
       const {_id: userId} = req.user as IUser;
 
-      const cartExists = await cartService.getCartByParams({_id:cartId});
-
-      const total_sum = calculateCartHelper(cartExists);
+      const cartExists = await cartService.getCartByParams({_id: cartId});
 
       if (!cartExists || userId.toString() !== cartExists.userId.toString()) {
         throw new ErrorHandler(
@@ -34,6 +32,7 @@ class OrderController {
           customErrors.BAD_REQUEST_CART_IS_NOT_EXISTS.code
         );
       }
+      const total_sum = calculateCartHelper(cartExists);
 
       for (const {gameId} of cartExists.games) {
 
@@ -75,10 +74,7 @@ class OrderController {
       const {tempId} = req.query;
       const {email, phone, name} = req.body;
 
-      const cartExists = await cartService.getCartByParams({_id:cartId});
-
-      const total_sum = calculateCartHelper(cartExists);
-
+      const cartExists = await cartService.getCartByParams({_id: cartId});
 
       if (!cartExists || tempId?.toString() !== cartExists.tempId?.toString()) {
         throw new ErrorHandler(
@@ -87,6 +83,7 @@ class OrderController {
           customErrors.BAD_REQUEST_CART_IS_NOT_EXISTS.code
         );
       }
+      const total_sum = calculateCartHelper(cartExists);
 
       for (const {gameId} of cartExists.games) {
 
@@ -111,11 +108,11 @@ class OrderController {
           total_sum
         });
 
-        // for (const {gameId} of cartExists.games) {
-        //   await gameService.editGameById(gameId as string, {status: GameStatusEnum.CONSIDER});
-        // }
-        //
-        // await cartService.deleteCart(cartExists._id);
+        for (const {gameId} of cartExists.games) {
+          await gameService.editGameById(gameId as string, {status: GameStatusEnum.CONSIDER});
+        }
+
+        await cartService.deleteCart(cartExists._id);
 
         res.end();
       }

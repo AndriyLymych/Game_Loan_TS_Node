@@ -35,6 +35,10 @@ class OrderService {
   getOrderByGameItemId(_id: string): Promise<IOrder | null> {
     return OrderModel.findOne({'games._id': _id}, 'total_sum status games.$').exec();
   }
+
+  incrementRememberMailCount(_id: string): Promise<IOrder | null>{
+    return OrderModel.updateOne({'games._id':_id},{$set:{'games.$.remember_mail_count':1}}).exec();
+  }
 }
 
 export const orderService = new OrderService();

@@ -28,6 +28,11 @@ const OrderSchema: Schema = new Schema<IOrder>({
         type: Number,
         required: false,
         default: 1
+      },
+      remember_mail_count:{
+        type:Number,
+        required:false,
+        default:0
       }
     }
   ],

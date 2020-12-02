@@ -1,4 +1,4 @@
-import {EmailActions,TokenActionEnum} from '../constant';
+import {EmailActions, TokenActionEnum} from '../constant';
 
 export const htmlTemplates: { [index: string]: { subject: string, templateFileName: string } } = {
   [TokenActionEnum.REGISTER_USER]: {
@@ -12,5 +12,9 @@ export const htmlTemplates: { [index: string]: { subject: string, templateFileNa
   [EmailActions.SEND_CREDENTIALS]: {
     subject: 'Дані входу в акаунт',
     templateFileName: 'send-game-credentials'
+  },
+  [EmailActions.FINISH_LOAN]: {
+    subject: 'Час оренди минув',
+    templateFileName: 'finish-loan'
   }
 };
