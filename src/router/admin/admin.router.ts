@@ -27,6 +27,7 @@ router.put(
   tokenMiddleware.checkTokenPresent,
   tokenMiddleware.verifyAndGetUserFromAuthToken(TokenActionEnum.AUTH_USER_ACCESS),
   adminMiddleware.isAdminChecker,
+  adminMiddleware.validateBlockPeriod,
   adminController.blockUser
 );
 router.put(

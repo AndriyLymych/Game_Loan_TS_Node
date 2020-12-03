@@ -8,7 +8,7 @@ const server = http.createServer(app);
 
 server.listen(config.PORT, async () => {
   await createMajorAdmin();
-  await cronJob();
+  cronJob();
 
   console.log(`Listen port ${config.PORT}...`);
 });

@@ -1,14 +1,15 @@
 import {IRequest, IUser} from '../../interface';
 import {NextFunction, Response} from 'express';
-import {adminService, authService, historyService, userService} from '../../service';
+import {adminService, authService, emailService, historyService, userService} from '../../service';
 import {customErrors, ErrorHandler} from '../../errors';
-import {HistoryEvent, ResponseStatusCodeEnum, UserStatusEnum} from '../../constant';
+import {EmailActions, HistoryEvent, ResponseStatusCodeEnum, UserStatusEnum} from '../../constant';
 
 class AdminController {
   async blockUser(req: IRequest, res: Response, next: NextFunction): Promise<void> {
     try {
       const {id} = req.params;
       const {_id: userId} = req.user as IUser;
+      const {blockPeriod} = req.body;
 
       const user = await userService.getUserById(id as Partial<IUser>);
 
@@ -37,7 +38,14 @@ class AdminController {
       }
 
       await authService.dropAuthTokenPairByUserId(id);
-      await adminService.blockOrUnlockUser(id, {status: UserStatusEnum.BLOCKED});
+      await adminService.blockOrUnlockUser(id, {status: UserStatusEnum.BLOCKED, blockPeriod});
+      await emailService.sendEmail(user.email, EmailActions.BLOCK_USER, {
+        blockInfo: {
+          name: user.name,
+          surname: user.surname,
+          period: blockPeriod
+        }
+      });
       await historyService.addEvent({event: `${HistoryEvent.blockUser} with id ${id}`, userId});
 
       res.end();
@@ -70,7 +78,13 @@ class AdminController {
         );
       }
 
-      await adminService.blockOrUnlockUser(id, {status: UserStatusEnum.CONFIRMED});
+      await adminService.blockOrUnlockUser(id, {status: UserStatusEnum.CONFIRMED, blockPeriod: 0});
+      await emailService.sendEmail(user.email, EmailActions.UNLOCK_USER, {
+        unlockInfo: {
+          name: user.name,
+          surname: user.surname
+        }
+      });
       await historyService.addEvent({event: `${HistoryEvent.unlockUser} with id ${id}`, userId});
 
       res.end();

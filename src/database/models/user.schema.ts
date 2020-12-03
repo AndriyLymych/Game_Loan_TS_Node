@@ -1,7 +1,7 @@
 import {Document, Model, model, Schema} from 'mongoose';
 
 import {IUser} from '../../interface';
-import {DbTableNameEnum,UserRoleEnum,UserStatusEnum} from '../../constant';
+import {DbTableNameEnum, UserRoleEnum, UserStatusEnum} from '../../constant';
 
 type UserType = IUser & Document
 
@@ -53,6 +53,11 @@ const UserSchema: Schema = new Schema<IUser>({
     type: String,
     required: true,
     default: UserStatusEnum.PENDING
+  },
+  blockPeriod: {
+    type: Number,
+    required: false,
+    default: 0
   },
   tokens: [tokenSubModel]
 }, {

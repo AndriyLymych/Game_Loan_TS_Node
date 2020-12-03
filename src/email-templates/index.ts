@@ -16,5 +16,13 @@ export const htmlTemplates: { [index: string]: { subject: string, templateFileNa
   [EmailActions.FINISH_LOAN]: {
     subject: 'Час оренди минув',
     templateFileName: 'finish-loan'
+  },
+  [EmailActions.BLOCK_USER]: {
+    subject: 'Вас заблоковано!',
+    templateFileName: 'block-user-info'
+  },
+  [EmailActions.UNLOCK_USER]: {
+    subject: 'Вас розблоковано!',
+    templateFileName: 'end-block-period'
   }
 };

@@ -3,7 +3,7 @@ import {historyService} from '../../service';
 import {IHistory} from '../../interface';
 import {config} from '../../config';
 
-export const cleanHistoryTable = async () => schedule(config.CRON_PERIOD_FOR_CLEAN_HISTORY, async (): Promise<void> => {
+export const cleanHistoryTable = () => schedule(config.CRON_PERIOD_FOR_CLEAN_HISTORY, async (): Promise<void> => {
   const currentData = new Date().getTime();
 
   const records: IHistory[] = await historyService.getAll();
