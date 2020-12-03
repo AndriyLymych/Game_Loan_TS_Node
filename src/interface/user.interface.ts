@@ -5,6 +5,11 @@ export interface IActionToken {
     action?: TokenActionEnum
 }
 
+export interface IBlockPeriod {
+    period?: number,
+    updatedAt?: string
+}
+
 export interface IUser {
     _id: string;
     email: string;
@@ -17,7 +22,7 @@ export interface IUser {
     role: string;
     gender?: string;
     status: string;
-    blockPeriod?: number;
+    blockPeriod?: IBlockPeriod;
     tokens?: IActionToken[];
     createdAt: string;
 }

@@ -46,6 +46,10 @@ class UserService {
       .exec();
   }
 
+  getAllRecords(condition: Partial<IUser>): Promise<IUser[]> {
+    return UserModel.find(condition).exec();
+  }
+
   findUserByNameOrSurname(name: string, limit: number, offset: number): Promise<IUser[]> {
 
     return UserModel.find({
