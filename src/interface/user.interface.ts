@@ -17,7 +17,7 @@ export interface IUser {
     photo?: string;
     name: string;
     surname: string;
-    age: number;
+    age?: number;
     phone?: string;
     role: string;
     gender?: string;

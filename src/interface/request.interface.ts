@@ -7,7 +7,7 @@ import {IGameComment} from './game-comment.interface';
 import {IOrder} from './order.interface';
 
 export interface IRequest extends Request {
-    user?: IUser,
+    user?: IUser | any,
     credentials?: IGameCredential,
     game?: IGame,
     comment?: IGameComment,

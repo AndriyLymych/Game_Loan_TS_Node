@@ -103,6 +103,14 @@ export const customErrors = {
     message: 'Token is not valid',
     code: 4012
   },
+  BAD_REQUEST_FACEBOOK_AUTH:{
+    message:'No user from facebook',
+    code:40013
+  },
+  BAD_REQUEST_GOOGLE_AUTH:{
+    message:'No user from google',
+    code:40014
+  },
 
   //403
   FORBIDDEN_USER_NOT_CONFIRMED: {

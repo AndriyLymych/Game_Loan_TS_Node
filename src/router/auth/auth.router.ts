@@ -1,4 +1,5 @@
 import {Router} from 'express';
+import {authenticate} from 'passport';
 import {authMiddleware, tokenMiddleware, userMiddleware} from '../../middleware';
 import {authController} from '../../controller';
 import {TokenActionEnum} from '../../constant';
@@ -37,5 +38,18 @@ router.put(
   authMiddleware.validateResetPasswordInfo,
   authController.resetPassword
 );
+
+router.get('/google', authenticate("google", {scope: ['profile', 'email']}));
+
+router.get('/google/callback', authenticate('google', {
+    session: false,
+    failureRedirect:'/'
+}), authController.authWithGoogle);
+
+router.get('/facebook', authenticate('facebook', {scope: ['email']}));
+
+router.get('/facebook/callback', authenticate('facebook', {
+  session: false
+}), authController.authWithFacebook);
 
 export const authRouter = router;

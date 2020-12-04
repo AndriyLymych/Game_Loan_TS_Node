@@ -1,5 +1,5 @@
 import {createTransport} from 'nodemailer';
-import * as path from 'path';
+import {resolve} from 'path';
 import * as EmailTemplates from 'email-templates';
 
 import {EmailActions, ResponseStatusCodeEnum, TokenActionEnum} from '../../constant';
@@ -31,7 +31,7 @@ const transporter = createTransport({
 const emailTemplates = new EmailTemplates({
   message: {},
   views: {
-    root: path.resolve(__dirname, '../../', 'email-templates')
+    root: resolve(__dirname, '../../', 'email-template')
   }
 });
 

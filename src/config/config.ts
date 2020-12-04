@@ -39,8 +39,10 @@ export const config = {
   CRON_PERIOD_FOR_CLEAN_AUTH_TOKENS: process.env.CRON_PERIOD_FOR_CLEAN_AUTH_TOKENS || '0 */4 * * *',
   CRON_PERIOD_FOR_UNLOCK_USERS: process.env.CRON_PERIOD_FOR_UNLOCK_USERS || '0 */5 * * *',
 
-  GOOGLE_CLIENT_ID : process.env.GOOGLE_CLIENT_ID || '221200163420-bcocn8434qlsn03bemi1gmd2gvitg20h.apps.googleusercontent.com',
-  GOOGLE_SECRET_KEY : process.env.GOOGLE_SECRET_KEY || 'MGKQden6GTjufOkk3ymz8aCV',
-  FACEBOOK_APP_ID : process.env.FACEBOOK_APP_ID || '717322315863846',
-  FACEBOOK_APP__SECRET : process.env.FACEBOOK_APP__SECRET || 'f2f02d9aa612ac641b339937a9d14a41'
+  GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID || '221200163420-bcocn8434qlsn03bemi1gmd2gvitg20h.apps.googleusercontent.com',
+  GOOGLE_SECRET_KEY: process.env.GOOGLE_SECRET_KEY || 'MGKQden6GTjufOkk3ymz8aCV',
+  FACEBOOK_APP_ID: process.env.FACEBOOK_APP_ID || '717322315863846',
+  FACEBOOK_APP__SECRET: process.env.FACEBOOK_APP__SECRET || 'f2f02d9aa612ac641b339937a9d14a41',
+
+  DEFAULT_PASSWORD_FOR_AUTH_WITH_SOCIAL_MEDIA: process.env.DEFAULT_PASSWORD_FOR_AUTH_WITH_SOCIAL_MEDIA || 'passwordwithsocialmedia'
 };

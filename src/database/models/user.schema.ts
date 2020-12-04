@@ -45,7 +45,7 @@ const UserSchema: Schema = new Schema<IUser>({
   },
   age: {
     type: Number,
-    required: true
+    required: false
   },
   phone: {
     type: String,
