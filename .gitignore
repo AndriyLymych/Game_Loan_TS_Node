@@ -1,0 +1,6 @@
+.env
+/dist
+node_modules
+.idea
+public
+/src/config/config.ts

@@ -6,6 +6,7 @@ import {TokenActionEnum} from '../../constant/token';
 
 const router = Router();
 
+
 router.post(
   '/',
   tokenMiddleware.checkTokenPresent,

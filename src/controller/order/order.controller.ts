@@ -1,5 +1,5 @@
 import {NextFunction, Response} from 'express';
-import {IGame, IOrder, IRequest, IUser} from 'src/interface';
+import {IGame, IOrder, IRequest, IUser} from '../../interface';
 import {cartService} from '../../service/cart';
 import {customErrors, ErrorHandler} from '../../errors';
 import {ResponseStatusCodeEnum} from '../../constant/db';
