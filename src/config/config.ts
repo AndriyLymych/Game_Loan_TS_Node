@@ -26,7 +26,7 @@ export const config = {
 
   MONGODB_URL: process.env.MONGODB_URL || 'mongodb://localhost/game_loan',
 
-  ROOT_EMAIL: process.env.ROOT_EMAIL || 'lymych1994@gmail.com',
+  ROOT_EMAIL: process.env.ROOT_EMAIL || 'playstationgameloan@gmail.com',
   ROOT_EMAIL_PASSWORD: process.env.ROOT_EMAIL_PASSWORD || '2000maxat',
   GLOBAL_ADMIN_NAME: process.env.GLOBAL_ADMIN_NAME || 'Андрій',
   GLOBAL_ADMIN_SURNAME: process.env.GLOBAL_ADMIN_SURNAME || 'Лимич',
@@ -37,5 +37,10 @@ export const config = {
   CRON_PERIOD_FOR_SEND_MSG_ABOUT_LOAN_FINISH: process.env.CRON_PERIOD_FOR_SEND_MSG_ABOUT_LOAN_FINISH || '0 */4 * * *',
   CRON_PERIOD_FOR_CLEAN_HISTORY: process.env.CRON_PERIOD_FOR_CLEAN_HISTORY || '0 0 * * SUN',
   CRON_PERIOD_FOR_CLEAN_AUTH_TOKENS: process.env.CRON_PERIOD_FOR_CLEAN_AUTH_TOKENS || '0 */4 * * *',
-  CRON_PERIOD_FOR_UNLOCK_USERS: process.env.CRON_PERIOD_FOR_UNLOCK_USERS || '0 */5 * * *'
+  CRON_PERIOD_FOR_UNLOCK_USERS: process.env.CRON_PERIOD_FOR_UNLOCK_USERS || '0 */5 * * *',
+
+  GOOGLE_CLIENT_ID : process.env.GOOGLE_CLIENT_ID || '221200163420-bcocn8434qlsn03bemi1gmd2gvitg20h.apps.googleusercontent.com',
+  GOOGLE_SECRET_KEY : process.env.GOOGLE_SECRET_KEY || 'MGKQden6GTjufOkk3ymz8aCV',
+  FACEBOOK_APP_ID : process.env.FACEBOOK_APP_ID || '717322315863846',
+  FACEBOOK_APP__SECRET : process.env.FACEBOOK_APP__SECRET || 'f2f02d9aa612ac641b339937a9d14a41'
 };
