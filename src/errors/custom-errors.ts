@@ -93,6 +93,10 @@ export const customErrors = {
     message: 'No such game in order',
     code: 40023
   },
+  BAD_REQUEST_PHOTO_IS_NOT_PRESENT: {
+    message: 'Photo is not present',
+    code: 40024
+  },
 
   //401
   UNAUTHORIZED_TOKEN_NOT_PRESENT: {
@@ -103,13 +107,13 @@ export const customErrors = {
     message: 'Token is not valid',
     code: 4012
   },
-  BAD_REQUEST_FACEBOOK_AUTH:{
-    message:'No user from facebook',
-    code:40013
+  BAD_REQUEST_FACEBOOK_AUTH: {
+    message: 'No user from facebook',
+    code: 40013
   },
-  BAD_REQUEST_GOOGLE_AUTH:{
-    message:'No user from google',
-    code:40014
+  BAD_REQUEST_GOOGLE_AUTH: {
+    message: 'No user from google',
+    code: 40014
   },
 
   //403
@@ -147,6 +151,14 @@ export const customErrors = {
   FORBIDDEN_YOU_CANT_DELETE_COMMENT: {
     message: 'You cant delete this comment',
     code: 4039
+  },
+  FORBIDDEN_BIG_PHOTO_SIZE: {
+    message: 'Big photo size',
+    code: 40310
+  },
+  FORBIDDEN_WRONG_PHOTO_COUNT: {
+    message: 'You cant upload more then 1 photo',
+    code: 40311
   },
 
   // 404

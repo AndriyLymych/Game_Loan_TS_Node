@@ -4,12 +4,19 @@ import {comparePassword, hashPassword, tokenCreator} from '../../helper';
 import {HistoryEvent, ResponseStatusCodeEnum, TokenActionEnum, UserRoleEnum, UserStatusEnum} from '../../constant';
 import {customErrors, ErrorHandler} from '../../errors';
 import {historyService, userService} from '../../service';
+import {resolve} from 'path';
+import * as fs from 'fs';
+import * as uuid from 'uuid';
 
 class UserController {
     createUser = (roleType: UserRoleEnum) => async (req: IRequest, res: Response, next: NextFunction) => {
       try {
         const user: IUser = req.body;
         const {email} = user;
+        const [photo] = req.photos as any;
+        const globalAny: any = global;
+        const randomName = uuid.v4();
+        const appRoot = globalAny.appRoot;
 
         const userExist = await userService.getUserByParams({email});
 
@@ -28,6 +35,7 @@ class UserController {
         const {access_token} = tokenCreator(TokenActionEnum.REGISTER_USER);
 
         const {_id} = await userService.createUser(user);
+
         await userService.insertActionToken(_id, {
           action: TokenActionEnum.REGISTER_USER,
           actionToken: access_token
@@ -35,13 +43,55 @@ class UserController {
         await historyService.addEvent({event: HistoryEvent.createUser, userId: _id});
         // await emailService.sendEmail(email, TokenActionEnum.REGISTER_USER, {token: access_token});
 
-        //TODO add user avatar save
+        const photoDir = `user/${_id}/avatar`;
+        const photoExtension = photo.name.split('.').pop();
+        const photoName = `${randomName}.${photoExtension}`;
+
+        await fs.mkdirSync(resolve(appRoot, 'public', photoDir), {recursive: true});
+
+        await photo.mv(resolve(appRoot, 'public', photoDir, photoName));
+
+        await userService.updateUser(_id, {
+          photo: `${photoDir}/${photoName}`
+        });
+
+        await userService.updateUser(_id, {
+          photo: `${photoDir}/${photoName}`
+        });
         res.status(ResponseStatusCodeEnum.CREATED).end();
 
       } catch (e) {
         next(e);
       }
     };
+
+    async updateUserAvatar(req: IRequest, res: Response, next: NextFunction): Promise<void> {
+      try {
+        const [photo] = req.photos as any;
+
+        const {_id} = req.user;
+        const globalAny: any = global;
+        const randomName = uuid.v4();
+        const appRoot = globalAny.appRoot;
+
+        const photoDir = `user/${_id}/avatar`;
+        const photoExtension = photo.name.split('.').pop();
+        const photoName = `${randomName}.${photoExtension}`;
+
+        await fs.mkdirSync(resolve(appRoot, 'public', photoDir), {recursive: true});
+
+        await photo.mv(resolve(appRoot, 'public', photoDir, photoName));
+
+        await userService.updateUser(_id, {
+          photo: `${photoDir}/${photoName}`
+        });
+
+        res.end();
+
+      } catch (e) {
+        next(e);
+      }
+    }
 
     async confirmUserAccount(req: IRequest, res: Response, next: NextFunction): Promise<void> {
       try {

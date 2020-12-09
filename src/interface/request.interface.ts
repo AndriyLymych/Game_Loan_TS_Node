@@ -11,5 +11,6 @@ export interface IRequest extends Request {
     credentials?: IGameCredential,
     game?: IGame,
     comment?: IGameComment,
-    order?: IOrder
+    order?: IOrder,
+    photos?: Array<any>
 }

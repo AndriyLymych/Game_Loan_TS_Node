@@ -7,25 +7,25 @@ const FacebookStrategy = facebook.Strategy;
 const GoogleStrategy = google.Strategy;
 
 passport.use(new FacebookStrategy({
-        clientID: config.FACEBOOK_APP_ID,
-        clientSecret: config.FACEBOOK_APP__SECRET,
-        callbackURL: 'http://localhost:5000/auth/facebook/callback',
-        profileFields: ['id', 'emails', 'name']
-    },
-    ((accessToken: string, refreshToken: string, profile: passport.Profile, cb) => {
+  clientID: config.FACEBOOK_APP_ID,
+  clientSecret: config.FACEBOOK_APP__SECRET,
+  callbackURL: 'http://localhost:5000/auth/facebook/callback',
+  profileFields: ['id', 'emails', 'name']
+},
+((accessToken: string, refreshToken: string, profile: passport.Profile, cb) => {
 
-        cb(null, profile);
-    })
+  cb(null, profile);
+})
 ));
 
 passport.use(new GoogleStrategy({
-        clientID: config.GOOGLE_CLIENT_ID,
-        clientSecret: config.GOOGLE_SECRET_KEY,
-        callbackURL: 'http://localhost:5000/auth/google/callback'
+  clientID: config.GOOGLE_CLIENT_ID,
+  clientSecret: config.GOOGLE_SECRET_KEY,
+  callbackURL: 'http://localhost:5000/auth/google/callback'
 
-    },
-    ((accessToken: string, refreshToken: string, profile: passport.Profile, cb: any) => {
+},
+((accessToken: string, refreshToken: string, profile: passport.Profile, cb: any) => {
 
-        cb(null, profile);
-    })
+  cb(null, profile);
+})
 ));

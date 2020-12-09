@@ -7,3 +7,4 @@ export * from './game-credential';
 export * from './game-comment';
 export * from './cart';
 export * from './order';
+export * from './photo';

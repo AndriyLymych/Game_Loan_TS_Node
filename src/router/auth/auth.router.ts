@@ -39,11 +39,11 @@ router.put(
   authController.resetPassword
 );
 
-router.get('/google', authenticate("google", {scope: ['profile', 'email']}));
+router.get('/google', authenticate('google', {scope: ['profile', 'email']}));
 
 router.get('/google/callback', authenticate('google', {
-    session: false,
-    failureRedirect:'/'
+  session: false,
+  failureRedirect:'/'
 }), authController.authWithGoogle);
 
 router.get('/facebook', authenticate('facebook', {scope: ['email']}));

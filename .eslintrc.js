@@ -131,7 +131,7 @@ module.exports = {
     '@typescript-eslint/array-type': 'off',
     '@typescript-eslint/ban-types': 'error',
     '@typescript-eslint/camelcase': 'off',
-    '@typescript-eslint/class-name-casing': 'off', // TODO
+    '@typescript-eslint/class-name-casing': 'off',
     '@typescript-eslint/consistent-type-assertions': 'error',
     '@typescript-eslint/consistent-type-definitions': 'error',
     '@typescript-eslint/explicit-function-return-type': 'off',
@@ -151,7 +151,7 @@ module.exports = {
     '@typescript-eslint/no-inferrable-types': 'error',
     '@typescript-eslint/no-misused-new': 'error',
     '@typescript-eslint/no-namespace': 'error',
-    '@typescript-eslint/no-non-null-assertion': 'error',
+    // '@typescript-eslint/no-non-null-assertion': 'error',
     '@typescript-eslint/no-parameter-properties': 'off',
     '@typescript-eslint/no-unused-vars': ['error', {
       vars: 'all',
@@ -160,7 +160,7 @@ module.exports = {
     }],
     '@typescript-eslint/triple-slash-reference': 'error',
     '@typescript-eslint/no-var-requires': 'off',
-    '@typescript-eslint/prefer-for-of': 'error',
+    // '@typescript-eslint/prefer-for-of': 'error',
     '@typescript-eslint/prefer-function-type': 'error',
     '@typescript-eslint/prefer-namespace-keyword': 'error',
     '@typescript-eslint/type-annotation-spacing': 'error',
