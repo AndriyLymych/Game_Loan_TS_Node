@@ -1,14 +1,15 @@
 import {GameGenreEnum, GameStatusEnum, GameVersionEnum} from '../constant';
 
-interface IGamePhoto {
-    mainPhoto?: string,
-    photoCollection?: string[]
+export interface IGamePictures {
+    _id: string,
+    picture: string
 }
 
 export interface IGame {
     _id: string;
     title: string;
-    photo?: IGamePhoto;
+    mainPhoto?: string;
+    pictures: IGamePictures[],
     description: string;
     version: GameVersionEnum,
     status: GameStatusEnum,

@@ -32,7 +32,7 @@ class GameController {
             await photo.mv(resolve(appRoot, 'public', photoDir, photoName));
 
             await gameService.editGameById(_id, {
-                photo: {mainPhoto: `${photoDir}/${photoName}`}
+                mainPhoto: `${photoDir}/${photoName}`
             });
 
             res.status(ResponseStatusCodeEnum.CREATED).end();
@@ -41,6 +41,82 @@ class GameController {
             next(e);
         }
     }
+
+    async updateGameMainAvatar(req: IRequest, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const [photo] = req.photos as any;
+
+            const {_id} = req.game as IGame;
+            const randomName = uuid.v4();
+            const globalAny = global as any;
+            const appRoot = globalAny.appRoot;
+
+            const photoDir = `game/${_id}/avatar`;
+            const photoExtension = photo.name.split('.').pop();
+            const photoName = `${randomName}.${photoExtension}`;
+
+            fs.mkdirSync(resolve(appRoot, 'public', photoDir), {recursive: true});
+            await photo.mv(resolve(appRoot, 'public', photoDir, photoName));
+
+            await gameService.editGameById(_id, {
+                mainPhoto: `${photoDir}/${photoName}`
+            });
+
+            res.end();
+
+        } catch (e) {
+            next(e);
+        }
+    }
+
+    async addGamePictureItem(req: IRequest, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const [photo] = req.photos as any;
+
+            const {_id} = req.game as IGame;
+            const randomName = uuid.v4();
+            const globalAny = global as any;
+            const appRoot = globalAny.appRoot;
+
+            const photoDir = `game/${_id}/pictures`;
+            const photoExtension = photo.name.split('.').pop();
+            const photoName = `${randomName}.${photoExtension}`;
+
+            fs.mkdirSync(resolve(appRoot, 'public', photoDir), {recursive: true});
+            await photo.mv(resolve(appRoot, 'public', photoDir, photoName));
+
+            await gameService.addGameCollectionPhoto(_id, {picture: `${photoDir}/${photoName}`});
+
+            res.end();
+
+        } catch (e) {
+            next(e);
+        }
+    }
+
+    async deleteGamePictureItem(req: IRequest, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const {id:_id} = req.params;
+
+            const picture = await gameService.getGameCollectionPhoto(_id);
+
+            if (!picture){
+                throw new ErrorHandler(
+                    ResponseStatusCodeEnum.BAD_REQUEST,
+                    customErrors.BAD_REQUEST_PHOTO_IS_NOT_PRESENT.message,
+                    customErrors.BAD_REQUEST_PHOTO_IS_NOT_PRESENT.code,
+                )
+            }
+
+            await gameService.deleteGameCollectionPhoto(_id);
+
+            res.end();
+
+        } catch (e) {
+            next(e);
+        }
+    }
+
 
     async editGame(req: IRequest, res: Response, next: NextFunction): Promise<void> {
         try {

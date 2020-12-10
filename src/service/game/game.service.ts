@@ -37,14 +37,24 @@ class GameService {
       .exec();
   }
 
-  getAllGamesByName(name: string, limit: number, offset: number): Promise<IGame[]> {
-    return GameModel.find({
-      title: {$regex: `${name}`, $options: 'i'}
-    },'title version')
-      .limit(limit)
-      .skip(offset)
-      .exec();
+  addGameCollectionPhoto(_id: string, photo: any): Promise<IGame | null> {
+    return GameModel.updateOne({_id}, {$push: {pictures: photo}}).exec();
   }
+  deleteGameCollectionPhoto(_id: string): Promise<IGame> {
+    return GameModel.updateOne({'pictures._id': _id}, {$pull: {pictures: {_id}}}).exec();
+  }
+  getGameCollectionPhoto(_id: string): Promise<IGame | null> {
+    return GameModel.findOne({'pictures._id': _id}, 'pictures.$').exec();
+  }
+
+//   getAllGamesByName(name: string, limit: number, offset: number): Promise<IGame[]> {
+//     return GameModel.find({
+//       title: {$regex: `${name}`, $options: 'i'}
+//     },'title version')
+//       .limit(limit)
+//       .skip(offset)
+//       .exec();
+//   }
 }
 
 export const gameService = new GameService();
