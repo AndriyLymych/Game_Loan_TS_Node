@@ -6,38 +6,38 @@ import {TokenActionEnum, UserRoleEnum} from '../../constant';
 const router = Router();
 
 router.post(
-    '/',
-    photoMiddleware.photoChecker,
-    photoMiddleware.photoCountCheck,
-    userMiddleware.validateUser,
-    userController.createUser(UserRoleEnum.USER)
+  '/',
+  photoMiddleware.photoChecker,
+  photoMiddleware.photoCountCheck,
+  userMiddleware.validateUser,
+  userController.createUser(UserRoleEnum.USER)
 );
 router.put(
-    '/confirm',
-    tokenMiddleware.checkTokenPresent,
-    tokenMiddleware.verifyAndGetUserFromActionToken(TokenActionEnum.REGISTER_USER),
-    userController.confirmUserAccount
+  '/confirm',
+  tokenMiddleware.checkTokenPresent,
+  tokenMiddleware.verifyAndGetUserFromActionToken(TokenActionEnum.REGISTER_USER),
+  userController.confirmUserAccount
 );
 
 router.use(
-    tokenMiddleware.checkTokenPresent,
-    tokenMiddleware.verifyAndGetUserFromAuthToken(TokenActionEnum.AUTH_USER_ACCESS)
+  tokenMiddleware.checkTokenPresent,
+  tokenMiddleware.verifyAndGetUserFromAuthToken(TokenActionEnum.AUTH_USER_ACCESS)
 );
 router.put(
-    '/password',
-    userMiddleware.validateChangePassword,
-    userController.changePassword
+  '/password',
+  userMiddleware.validateChangePassword,
+  userController.changePassword
 );
 router.put(
-    '/',
-    userMiddleware.validateUpdateUserData,
-    userController.updateUserProfile
+  '/',
+  userMiddleware.validateUpdateUserData,
+  userController.updateUserProfile
 );
 router.put(
-    '/photo',
-    photoMiddleware.photoChecker,
-    photoMiddleware.photoCountCheck,
-    userController.updateUserAvatar
+  '/photo',
+  photoMiddleware.photoChecker,
+  photoMiddleware.photoCountCheck,
+  userController.updateUserAvatar
 );
 router.get('/', adminMiddleware.isAdminChecker, userController.findUsersOrUserByName);
 

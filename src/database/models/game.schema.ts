@@ -4,15 +4,22 @@ import {DbTableNameEnum, GameStatusEnum} from '../../constant';
 
 type GameType = IGame & Document
 
+const photoSubModel = {
+  mainPhoto: {
+    type: String,
+    required: false
+  },
+  photoCollection: [{
+    type: String,
+    required: false
+  }]
+};
 const GameSchema: Schema = new Schema<IGame>({
   title: {
     type: String,
     required: true
   },
-  photo: [{
-    type: String,
-    required: false
-  }],
+  photo: photoSubModel,
   description: {
     type: String,
     required: true

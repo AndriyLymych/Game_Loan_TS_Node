@@ -1,5 +1,5 @@
 import {Router} from 'express';
-import {adminMiddleware, authMiddleware, tokenMiddleware, userMiddleware} from '../../middleware';
+import {adminMiddleware, authMiddleware, photoMiddleware, tokenMiddleware,userMiddleware} from '../../middleware';
 import {adminController, authController, userController} from '../../controller';
 import {UserRoleEnum} from '../../constant/user';
 import {TokenActionEnum} from '../../constant/token';
@@ -12,6 +12,8 @@ router.post(
   tokenMiddleware.verifyAndGetUserFromAuthToken(TokenActionEnum.AUTH_USER_ACCESS),
   adminMiddleware.isAdminChecker,
   userMiddleware.validateUser,
+  photoMiddleware.photoChecker,
+  photoMiddleware.photoCountCheck,
   userController.createUser(UserRoleEnum.ADMIN)
 );
 router.post(

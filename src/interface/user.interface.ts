@@ -1,4 +1,4 @@
-import {TokenActionEnum} from '../constant/token';
+import {TokenActionEnum} from '../constant';
 
 export interface IActionToken {
     actionToken?: string,

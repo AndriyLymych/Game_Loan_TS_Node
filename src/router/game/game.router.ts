@@ -1,5 +1,5 @@
 import {Router} from 'express';
-import {adminMiddleware, gameMiddleware, tokenMiddleware} from '../../middleware';
+import {adminMiddleware, gameMiddleware, photoMiddleware, tokenMiddleware} from '../../middleware';
 import {gameController} from '../../controller';
 import {TokenActionEnum} from '../../constant';
 
@@ -16,6 +16,8 @@ router.use(
 
 router.post(
   '/',
+  photoMiddleware.photoChecker,
+  photoMiddleware.photoCountCheck,
   gameMiddleware.validateGame,
   gameController.addGame
 );

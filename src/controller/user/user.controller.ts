@@ -5,7 +5,7 @@ import {HistoryEvent, ResponseStatusCodeEnum, TokenActionEnum, UserRoleEnum, Use
 import {customErrors, ErrorHandler} from '../../errors';
 import {historyService, userService} from '../../service';
 import {resolve} from 'path';
-import * as fs from 'fs';
+import * as fs from 'fs-extra';
 import * as uuid from 'uuid';
 
 class UserController {
@@ -14,8 +14,9 @@ class UserController {
         const user: IUser = req.body;
         const {email} = user;
         const [photo] = req.photos as any;
-        const globalAny: any = global;
+
         const randomName = uuid.v4();
+        const globalAny = global as any;
         const appRoot = globalAny.appRoot;
 
         const userExist = await userService.getUserByParams({email});
@@ -47,7 +48,7 @@ class UserController {
         const photoExtension = photo.name.split('.').pop();
         const photoName = `${randomName}.${photoExtension}`;
 
-        await fs.mkdirSync(resolve(appRoot, 'public', photoDir), {recursive: true});
+        fs.mkdirSync(resolve(appRoot, 'public', photoDir), {recursive: true});
 
         await photo.mv(resolve(appRoot, 'public', photoDir, photoName));
 
@@ -70,16 +71,15 @@ class UserController {
         const [photo] = req.photos as any;
 
         const {_id} = req.user;
-        const globalAny: any = global;
         const randomName = uuid.v4();
+        const globalAny = global as any;
         const appRoot = globalAny.appRoot;
 
         const photoDir = `user/${_id}/avatar`;
         const photoExtension = photo.name.split('.').pop();
         const photoName = `${randomName}.${photoExtension}`;
 
-        await fs.mkdirSync(resolve(appRoot, 'public', photoDir), {recursive: true});
-
+        fs.mkdirSync(resolve(appRoot, 'public', photoDir), {recursive: true});
         await photo.mv(resolve(appRoot, 'public', photoDir, photoName));
 
         await userService.updateUser(_id, {

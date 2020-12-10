@@ -4,103 +4,124 @@ import {gameCommentService, gameService, historyService} from '../../service';
 import {HistoryEvent} from '../../constant/history';
 import {ResponseStatusCodeEnum} from '../../constant';
 import {customErrors, ErrorHandler} from '../../errors';
+import * as uuid from 'uuid';
+import * as fs from 'fs-extra';
+import {resolve} from 'path';
 
 class GameController {
-  async addGame(req: IRequest, res: Response, next: NextFunction): Promise<void> {
-    try {
-      const game = req.body as IGame;
-      const {_id: userId} = req.user as IUser;
+    async addGame(req: IRequest, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const game = req.body as IGame;
 
-      await gameService.addGame(game);
-      await historyService.addEvent({event: HistoryEvent.addGame, userId});
+            const {_id: userId} = req.user as IUser;
+            const [photo] = req.photos as any;
 
-      res.status(ResponseStatusCodeEnum.CREATED).end();
+            const randomName = uuid.v4();
+            const globalAny = global as any;
+            const appRoot = globalAny.appRoot;
 
-    } catch (e) {
-      next(e);
+            const {_id} = await gameService.addGame(game);
+
+            await historyService.addEvent({event: HistoryEvent.addGame, userId});
+
+            const photoDir = `game/${_id}/avatar`;
+            const photoExtension = photo.name.split('.').pop();
+            const photoName = `${randomName}.${photoExtension}`;
+
+            fs.mkdirSync(resolve(appRoot, 'public', photoDir), {recursive: true});
+            await photo.mv(resolve(appRoot, 'public', photoDir, photoName));
+
+            await gameService.editGameById(_id, {
+                photo: {mainPhoto: `${photoDir}/${photoName}`}
+            });
+
+            res.status(ResponseStatusCodeEnum.CREATED).end();
+
+        } catch (e) {
+            next(e);
+        }
     }
-  }
 
-  async editGame(req: IRequest, res: Response, next: NextFunction): Promise<void> {
-    try {
-      const {title, description, genre, size, version} = req.body as IGame;
-      const {_id: gameId} = req.game as IGame;
-      const {_id: userId} = req.user as IUser;
+    async editGame(req: IRequest, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const {title, description, genre, size, version} = req.body as IGame;
+            const {_id: gameId} = req.game as IGame;
+            const {_id: userId} = req.user as IUser;
 
-      await gameService.editGameById(gameId, {title, description, genre, size, version});
-      await historyService.addEvent({event: `${HistoryEvent.editGame} with id ${gameId}`, userId});
+            await gameService.editGameById(gameId, {title, description, genre, size, version});
+            await historyService.addEvent({event: `${HistoryEvent.editGame} with id ${gameId}`, userId});
 
-      res.end();
+            res.end();
 
-    } catch (e) {
-      next(e);
+        } catch (e) {
+            next(e);
+        }
     }
-  }
 
-  async deleteGame(req: IRequest, res: Response, next: NextFunction): Promise<void> {
-    try {
-      const {_id: gameId} = req.game as IGame;
-      const {_id: userId} = req.user as IUser;
+    async deleteGame(req: IRequest, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const {_id: gameId} = req.game as IGame;
+            const {_id: userId} = req.user as IUser;
 
-      await gameService.deleteGameById(gameId);
-      await historyService.addEvent({event: `${HistoryEvent.deleteGame} with id ${gameId}`, userId});
+            await gameService.deleteGameById(gameId);
+            await historyService.addEvent({event: `${HistoryEvent.deleteGame} with id ${gameId}`, userId});
 
-      res.end();
+            res.end();
 
-    } catch (e) {
-      next(e);
+        } catch (e) {
+            next(e);
+        }
     }
-  }
 
-  async getAllGamesOrGameByName(req: IRequest, res: Response, next: NextFunction): Promise<void> {
-    try {
-      const {name, limit} = req.query;
-      let {page = 1} = req.query;
-      let games: IGame[] = [];
+    async getAllGamesOrGameByName(req: IRequest, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const {name, limit} = req.query;
+            let {page = 1} = req.query;
+            let games: IGame[] = [];
 
-      if (+page === 0) {
-        page = 1;
-      }
-      page = +page - 1;
+            if (+page === 0) {
+                page = 1;
+            }
+            page = +page - 1;
 
-      if (!name) {
-        games = await gameService.getGames(Number(limit), Number(limit) * +page);
-      }
-      if (name) {
-        games = await gameService.getGamesByName(name as string, Number(limit), Number(limit) * +page);
+            if (!name) {
+                games = await gameService.getGames(Number(limit), Number(limit) * +page);
+            }
+            if (name) {
+                games = await gameService.getGamesByName(name as string, Number(limit), Number(limit) * +page);
 
-      }
+            }
 
-      if (!games.length) {
-        throw new ErrorHandler(
-          ResponseStatusCodeEnum.BAD_REQUEST,
-          customErrors.BAD_REQUEST_GAME_IS_NOT_FOUND.message,
-          customErrors.BAD_REQUEST_GAME_IS_NOT_FOUND.code
-        );
-      }
+            if (!games.length) {
+                throw new ErrorHandler(
+                    ResponseStatusCodeEnum.BAD_REQUEST,
+                    customErrors.BAD_REQUEST_GAME_IS_NOT_FOUND.message,
+                    customErrors.BAD_REQUEST_GAME_IS_NOT_FOUND.code
+                );
+            }
 
-      res.json(games);
+            res.json(games);
 
-    } catch (e) {
-      next(e);
+        } catch (e) {
+            next(e);
+        }
     }
-  }
 
-  async getAvgMark(req: IRequest, res: Response, next: NextFunction): Promise<void> {
-    try {
-      const {_id: gameId} = req.game as IGame;
+    async getAvgMark(req: IRequest, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const {_id: gameId} = req.game as IGame;
 
-      const avgMark: any [] = await gameCommentService.getAvgGameMark(gameId);
+            const avgMark: any [] = await gameCommentService.getAvgGameMark(gameId);
 
-      if (avgMark.length) {
-        await gameService.editGameById(gameId, {rate: avgMark[0].avgMark});
+            if (avgMark.length) {
+                await gameService.editGameById(gameId, {rate: avgMark[0].avgMark});
 
-      }
-      res.json(avgMark[0]?.avgMark || 0);
-    } catch (e) {
-      next(e);
+            }
+            res.json(avgMark[0]?.avgMark || 0);
+        } catch (e) {
+            next(e);
+        }
     }
-  }
 
 }
 
